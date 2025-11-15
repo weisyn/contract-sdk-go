@@ -1,0 +1,76 @@
+{
+  "name": "simple-token-basic-flow",
+  "category": "strict-pass",
+  "type": "contract",
+  "contract": {
+    "template": "learning/simple-token",
+    "entrypoints": [
+      "GetContractInfo",
+      "GetBalance",
+      "Transfer"
+    ]
+  },
+  "env": {
+    "network": "testing",
+    "node_mode": "single-node",
+    "jsonrpc_endpoint": "http://127.0.0.1:8080/jsonrpc"
+  },
+  "steps": [
+    {
+      "name": "deploy-contract",
+      "action": "deploy_contract",
+      "params": {
+        "wasm_path": "./contracts/templates/learning/simple-token/simple-token.wasm"
+      },
+      "expect": {
+        "success": true,
+        "contract_address_non_empty": true
+      }
+    },
+    {
+      "name": "query-contract-info",
+      "action": "call",
+      "params": {
+        "method": "GetContractInfo",
+        "args": {}
+      },
+      "expect": {
+        "name": "我的代币",
+        "symbol": "MYT"
+      }
+    },
+    {
+      "name": "query-initial-balance",
+      "action": "call",
+      "params": {
+        "method": "GetBalance",
+        "args": {
+          "address": "$SENDER"
+        }
+      },
+      "expect": {
+        "balance_greater_or_equal": "0"
+      }
+    },
+    {
+      "name": "transfer-and-validate",
+      "action": "call",
+      "params": {
+        "method": "Transfer",
+        "args": {
+          "to": "$RECIPIENT",
+          "amount": "100"
+        }
+      },
+      "expect": {
+        "success": true
+      }
+    }
+  ],
+  "notes": [
+    "该用例用于演示如何在 WES 上以规范化方式测试学习版代币合约。",
+    "执行测试时，应保证节点运行在 testing 环境、单节点共识模式下。"
+  ]
+}
+
+

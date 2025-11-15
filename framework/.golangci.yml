@@ -1,0 +1,37 @@
+# GolangCI-Lint配置文件
+# 用于抑制WASM环境中的误报警告
+
+linters:
+  disable-all: false
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+
+linters-settings:
+  gosec:
+    # 允许unsafe.Pointer在WASM环境中的使用
+    exclude:
+      - "G103: Use of unsafe calls should be audited"
+  golint:
+    # 允许类型定义在文件前面的情况
+    min-confidence: 0.8
+
+issues:
+  # 排除特定文件的警告
+  exclude-rules:
+    # host_functions_stub.go 在非WASM构建中，类型定义在文件前面
+    - path: _sdks/contract-sdk-go/framework/host_functions_stub.go
+      linters:
+        - golint
+      text: "undefined:"
+    # contract_base.go 在WASM环境中需要使用unsafe.Pointer
+    - path: _sdks/contract-sdk-go/framework/contract_base.go
+      linters:
+        - gosec
+      text: "possible misuse of unsafe.Pointer"
+
