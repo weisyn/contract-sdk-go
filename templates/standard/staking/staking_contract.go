@@ -1,3 +1,5 @@
+//go:build tinygo || (js && wasm)
+
 package main
 
 import (
@@ -165,11 +167,26 @@ func Unstake() uint32 {
 	}
 
 	// 5. 创建解锁输出
-	var addr framework.Address
-	copy(addr[:], staker)
-	if err := framework.CreateUTXO(addr, framework.Amount(amount), ""); err != nil {
+	// 注意：实际应用中应该使用 helpers/staking 模块的 Unstake 函数
+	// 这里展示底层实现方式，使用 TransactionBuilder 创建资产输出
+	// 
+	// 推荐做法（使用 helpers/staking）：
+	//   validatorAddr := framework.Address{} // TODO: 从状态获取验证者地址
+	//   stakerAddr := framework.AddressFromBytes(staker)
+	//   if err := staking.Unstake(stakerAddr, validatorAddr, framework.TokenID(""), framework.Amount(amount)); err != nil {
+	//       contract.EmitLog("error", "Failed to unstake")
+	//       return framework.ERROR_EXECUTION_FAILED
+	//   }
+	//
+	// 底层实现方式（仅用于演示）：
+	//   使用 TransactionBuilder 创建资产输出
+	stakerAddr := framework.AddressFromBytes(staker)
+	success, _, errCode := framework.BeginTransaction().
+		AddAssetOutput(stakerAddr, framework.TokenID(""), framework.Amount(amount)).
+		Finalize()
+	if !success {
 		contract.EmitLog("error", "Failed to create output")
-		return framework.ERROR_EXECUTION_FAILED
+		return errCode
 	}
 
 	contract.EmitEvent("Unstaked", append(staker, uint64ToBytes(amount)...))
