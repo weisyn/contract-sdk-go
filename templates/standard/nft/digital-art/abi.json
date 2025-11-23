@@ -1,0 +1,95 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "MintNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "艺术品名称"
+        },
+        {
+          "name": "artist",
+          "type": "string",
+          "required": true,
+          "description": "艺术家名称"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "艺术品描述"
+        },
+        {
+          "name": "image_url",
+          "type": "string",
+          "required": false,
+          "description": "艺术品图片URL"
+        }
+      ],
+      "returnType": "number",
+      "description": "铸造唯一的数字艺术NFT，包含元数据",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "TransferNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移NFT所有权",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "QueryNFT",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询NFT的所有者信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

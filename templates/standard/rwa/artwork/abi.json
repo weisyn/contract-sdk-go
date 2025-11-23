@@ -1,0 +1,140 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "TokenizeAsset",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "asset_id",
+          "type": "string",
+          "required": true,
+          "description": "资产ID"
+        },
+        {
+          "name": "total_supply",
+          "type": "number",
+          "required": true,
+          "description": "总供应量"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "使用 ISPC 受控机制验证和代币化艺术品",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "TransferAsset",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "转移数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移艺术品份额",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "EscrowAsset",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "buyer",
+          "type": "address",
+          "required": true,
+          "description": "买方地址"
+        },
+        {
+          "name": "seller",
+          "type": "address",
+          "required": true,
+          "description": "卖方地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "托管数量"
+        },
+        {
+          "name": "escrow_id",
+          "type": "string",
+          "required": true,
+          "description": "托管ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "创建艺术品托管，适用于交易、质押",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "ReleaseYield",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "beneficiary",
+          "type": "address",
+          "required": true,
+          "description": "受益人地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "total_amount",
+          "type": "number",
+          "required": true,
+          "description": "总释放金额"
+        },
+        {
+          "name": "vesting_id",
+          "type": "string",
+          "required": true,
+          "description": "释放计划ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "创建分阶段版税释放计划",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+

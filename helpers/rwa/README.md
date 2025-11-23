@@ -40,15 +40,16 @@ func ValidateAndTokenize(
 
 **返回结果**：
 ```go
-type TokenizeResult struct {
+type ValidateAndTokenizeResult struct {
     TokenID         framework.TokenID  // 生成的代币ID
     Validated       bool               // 是否验证通过
-    ValidationProof []byte            // 验证过程证明
+    ValidationProof []byte            // 验证过程证明（ISPC自动生成的ZK证明）
     Valuation       uint64            // 资产估值
-    ValuationProof  []byte            // 估值过程证明
-    TxHash          framework.Hash    // 交易哈希
+    ValuationProof  []byte            // 估值过程证明（ISPC自动生成的ZK证明）
 }
 ```
+
+**注意**：`ValidationProof` 和 `ValuationProof` 包含 ISPC 自动生成的 ZK 证明，验证了外部 API 调用的完整性和正确性。
 
 **示例**：
 ```go

@@ -1,0 +1,62 @@
+{
+  "id": "basic-staking",
+  "name": "Basic Staking",
+  "category": "Staking",
+  "description": "基础质押合约，实现代币质押和委托功能，包括质押、解质押、委托、取消委托等",
+  "tags": [
+    "standard",
+    "staking",
+    "delegate",
+    "validator"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "staking"
+  ],
+  "parameters": [
+    {
+      "name": "validator",
+      "type": "address",
+      "required": true,
+      "description": "验证者地址"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "质押/解质押/委托数量"
+    },
+    {
+      "name": "delegatee",
+      "type": "address",
+      "required": false,
+      "description": "被委托者地址（Delegate）"
+    }
+  ],
+  "risks": [
+    "需要实现验证者有效性检查",
+    "需要实现最小质押数量检查",
+    "需要实现锁定期检查",
+    "需要实现冷却期检查"
+  ],
+  "prerequisites": [
+    "了解质押基本概念",
+    "了解验证者机制"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Stake --params '{\"validator\":\"<address>\",\"amount\":10000}'",
+    "wes contract call <contract_address> --function Unstake --params '{\"validator\":\"<address>\",\"amount\":5000}'",
+    "wes contract call <contract_address> --function Delegate --params '{\"validator\":\"<address>\",\"amount\":5000}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

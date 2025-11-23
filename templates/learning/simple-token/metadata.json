@@ -1,0 +1,63 @@
+{
+  "id": "simple-token",
+  "name": "Simple Token",
+  "category": "Learning",
+  "description": "学习版代币合约，提供大量注释和教学说明，帮助开发者理解代币合约的基础概念和UTXO模型",
+  "tags": [
+    "learning",
+    "beginner",
+    "token",
+    "fungible-token",
+    "utxo"
+  ],
+  "language": "go",
+  "level": "learning",
+  "entryFile": "src/main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（Transfer）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "代币数量"
+    },
+    {
+      "name": "address",
+      "type": "address",
+      "required": true,
+      "description": "查询地址（GetBalance）"
+    }
+  ],
+  "risks": [
+    "学习模板未实现权限控制",
+    "需要验证所有输入参数",
+    "需要确保余额检查逻辑正确"
+  ],
+  "prerequisites": [
+    "完成 hello-world 学习模板",
+    "了解 Go 基础语法",
+    "了解 WES UTXO 模型"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Transfer --params '{\"to\":\"<address>\",\"amount\":100}'",
+    "wes contract call <contract_address> --function GetBalance --params '{\"address\":\"<address>\"}'",
+    "wes contract call <contract_address> --function GetTotalSupply"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

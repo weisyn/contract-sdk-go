@@ -1,0 +1,42 @@
+{
+  "id": "starter-contract",
+  "name": "Starter Contract",
+  "category": "Learning",
+  "description": "自定义合约开发入门模板，提供空白但结构完整的合约骨架，帮助开发者从零开始构建自定义合约",
+  "tags": [
+    "learning",
+    "intermediate",
+    "starter",
+    "template",
+    "custom"
+  ],
+  "language": "go",
+  "level": "learning",
+  "entryFile": "src/main.go",
+  "helpers": [],
+  "parameters": [],
+  "risks": [
+    "需要自行实现所有业务逻辑",
+    "需要确保安全性和正确性",
+    "需要充分测试"
+  ],
+  "prerequisites": [
+    "完成 hello-world、simple-token 和 basic-nft 学习模板",
+    "了解 Go 基础语法",
+    "了解 WES 合约开发框架",
+    "了解合约安全最佳实践"
+  ],
+  "examples": [
+    "wes contract deploy main.wasm --function Initialize",
+    "wes contract call <contract_address> --function YourCustomFunction"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

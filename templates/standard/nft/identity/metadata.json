@@ -1,0 +1,69 @@
+{
+  "id": "identity",
+  "name": "Identity",
+  "category": "NFT",
+  "description": "身份证明NFT合约，实现数字身份、身份认证等的链上管理",
+  "tags": [
+    "standard",
+    "nft",
+    "identity",
+    "digital-id",
+    "authentication"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintIdentity）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "身份唯一标识"
+    },
+    {
+      "name": "identity_name",
+      "type": "string",
+      "required": true,
+      "description": "身份名称"
+    },
+    {
+      "name": "issuer",
+      "type": "string",
+      "required": true,
+      "description": "颁发机构"
+    }
+  ],
+  "risks": [
+    "需要实现身份验证（验证身份真实性）",
+    "需要实现身份撤销机制",
+    "需要验证所有输入参数"
+  ],
+  "prerequisites": [
+    "完成 Basic NFT 学习模板",
+    "了解 NFT 基本概念",
+    "了解身份认证应用场景"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function MintIdentity --params '{\"to\":\"<address>\",\"token_id\":\"ID_001\",\"identity_name\":\"Digital ID\",\"issuer\":\"Government Agency\"}'",
+    "wes contract call <contract_address> --function TransferIdentity --params '{\"to\":\"<address>\",\"token_id\":\"ID_001\"}'",
+    "wes contract call <contract_address> --function QueryIdentity --params '{\"token_id\":\"ID_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

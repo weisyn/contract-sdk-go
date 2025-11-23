@@ -1,0 +1,89 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "MintNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "收藏品名称"
+        },
+        {
+          "name": "series",
+          "type": "string",
+          "required": false,
+          "description": "系列名称"
+        },
+        {
+          "name": "rarity",
+          "type": "string",
+          "required": false,
+          "description": "稀有度"
+        }
+      ],
+      "returnType": "number",
+      "description": "铸造唯一的收藏品NFT，包含元数据（系列、稀有度等）",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "TransferNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移NFT所有权",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "QueryNFT",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询NFT的所有者信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

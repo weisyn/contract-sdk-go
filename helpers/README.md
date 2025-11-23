@@ -117,7 +117,21 @@ L1: HostABI原语        ← 由ISPC提供（17个原语）
 
 ---
 
-### 6. External 模块（受控外部交互）
+### 6. NFT 模块 ✅
+
+**路径**: `helpers/nft/`
+
+**功能**:
+|- ✅ **基础功能**：Mint, Transfer, Burn, OwnerOf, BalanceOf, GetMetadata（NFT操作）
+|- ✅ **基于Token模块**：NFT本质上是数量为1的特殊代币
+
+**特点**: NFT模块是对Token模块的扩展，专门用于处理NFT业务场景
+
+**状态**: 开发中
+
+---
+
+### 7. External 模块（受控外部交互）
 
 **路径**: `helpers/external/`
 

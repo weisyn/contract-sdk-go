@@ -1,0 +1,76 @@
+{
+  "id": "artwork",
+  "name": "Artwork",
+  "category": "RWA",
+  "description": "艺术品代币化合约，使用 ISPC 受控机制验证和代币化艺术品，实现名画、古董、收藏品等的链上管理和交易",
+  "tags": [
+    "standard",
+    "rwa",
+    "artwork",
+    "art",
+    "collectible"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "rwa",
+    "token",
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "asset_id",
+      "type": "string",
+      "required": true,
+      "description": "资产ID（TokenizeArtwork）"
+    },
+    {
+      "name": "total_supply",
+      "type": "number",
+      "required": true,
+      "description": "总供应量（TokenizeArtwork）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "代币ID"
+    },
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（TransferArtwork）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "转移数量（TransferArtwork）"
+    }
+  ],
+  "risks": [
+    "需要实现艺术品验证逻辑（验证服务）",
+    "需要实现艺术品估值逻辑（估值服务）",
+    "需要实现版税计算（版税比例、分配规则等）"
+  ],
+  "prerequisites": [
+    "了解 RWA 代币化概念",
+    "了解 ISPC 受控外部交互机制",
+    "了解艺术品验证和估值流程"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function TokenizeArtwork --params '{\"asset_id\":\"artwork_001\",\"total_supply\":1000000,\"token_id\":\"ARTWORK_001\"}'",
+    "wes contract call <contract_address> --function TransferArtwork --params '{\"to\":\"<address>\",\"token_id\":\"ARTWORK_001\",\"amount\":1000}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

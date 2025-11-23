@@ -229,6 +229,45 @@ func CustomAction() uint32 {
 
 ---
 
+## 📊 HostABI 原语覆盖矩阵
+
+Framework 层完整封装了 WES HostABI 的 17 个最小原语。下表展示了原语分类和 Framework 层的封装情况：
+
+| 分类 | 原语数量 | HostABI 原语 | Framework 封装函数 | 说明 |
+|------|---------|-------------|------------------|------|
+| **确定性区块视图** | 4 | `get_block_height` | `GetBlockHeight()` | 获取区块高度 |
+| | | `get_block_hash` | `GetBlockHash(height)` | 获取区块哈希 |
+| | | `get_merkle_root` | `GetMerkleRoot(height)` | 获取 Merkle 根 |
+| | | `get_state_root` | `GetStateRoot(height)` | 获取状态根 |
+| **执行上下文** | 3 | `get_caller` | `GetCaller()` | 获取调用者地址 |
+| | | `get_contract_address` | `GetContractAddress()` | 获取合约地址 |
+| | | `get_tx_hash` | `GetTransactionID()` | 获取交易ID |
+| **UTXO 查询** | 2 | `utxo_lookup` | `UTXOLookup(outPoint)` | 查询指定 UTXO |
+| | | `utxo_exists` | `UTXOExists(outPoint)` | 检查 UTXO 是否存在 |
+| **资源查询** | 2 | `resource_lookup` | `ResourceLookup(contentHash)` | 查询指定资源 |
+| | | `resource_exists` | `ResourceExists(contentHash)` | 检查资源是否存在 |
+| **交易草稿构建** | 4 | `append_state_output` | `AppendStateOutput()` | 添加状态输出 |
+| | | `append_resource_output` | `AppendResourceOutput()` | 添加资源输出 |
+| | | `create_asset_output_with_lock` | `CreateAssetOutputWithLock()` | 创建资产输出（带锁定） |
+| | | `batch_create_outputs` | `BatchCreateOutputsSimple()` | 批量创建输出 |
+| **执行追踪** | 2 | `emit_event` | `EmitEvent()` | 发出事件 |
+| | | `log_debug` | `LogDebug()` | 记录调试日志 |
+
+**覆盖状态**：✅ 完整覆盖（17/17）
+
+**封装特点**：
+- 所有原语都提供了类型安全的 Go 接口
+- 统一了错误处理和参数验证
+- 提供了账户抽象支持（如 `QueryUTXOBalance`）
+- 支持链式交易构建 API（`TransactionBuilder`）
+
+**使用建议**：
+- 合约开发者应优先使用 Helpers 层的业务语义接口
+- Framework 层主要用于环境查询、事件发出等基础能力
+- 交易构建相关的 API（如 `TransactionBuilder`）是内部实现，不应直接使用
+
+---
+
 ## 🔗 相关文档
 
 - [Contract SDK 主 README](../README.md) - SDK 总览

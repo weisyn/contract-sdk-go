@@ -1,0 +1,66 @@
+{
+  "id": "escrow",
+  "name": "Escrow",
+  "category": "Market",
+  "description": "市场托管合约，实现代币托管功能，自动处理余额检查和资产锁定",
+  "tags": [
+    "standard",
+    "market",
+    "escrow",
+    "trust",
+    "payment"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "buyer",
+      "type": "address",
+      "required": true,
+      "description": "买方地址（Escrow）"
+    },
+    {
+      "name": "seller",
+      "type": "address",
+      "required": true,
+      "description": "卖方地址（Escrow）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "托管金额（Escrow）"
+    },
+    {
+      "name": "escrow_id",
+      "type": "string",
+      "required": true,
+      "description": "托管ID（Escrow）"
+    }
+  ],
+  "risks": [
+    "需要实现托管条件验证（交易条件、质押条件等）",
+    "需要实现托管金额限制",
+    "需要实现托管ID唯一性检查"
+  ],
+  "prerequisites": [
+    "了解市场交易基本概念",
+    "了解托管机制"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Escrow --params '{\"buyer\":\"<address>\",\"seller\":\"<address>\",\"amount\":10000,\"escrow_id\":\"escrow_123\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "gaming",
+  "name": "Gaming",
+  "category": "NFT",
+  "description": "游戏道具NFT合约，实现游戏装备、道具等的代币化，支持道具铸造、转移和查询",
+  "tags": [
+    "standard",
+    "nft",
+    "gaming",
+    "game-item",
+    "equipment"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintNFT）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "NFT唯一标识"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "description": "道具名称"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "required": false,
+      "description": "道具类型（weapon/armor/potion等）"
+    },
+    {
+      "name": "level",
+      "type": "number",
+      "required": false,
+      "description": "道具等级"
+    },
+    {
+      "name": "attributes",
+      "type": "string",
+      "required": false,
+      "description": "道具属性（strength:100,agility:50等）"
+    }
+  ],
+  "risks": [
+    "需要实现tokenID唯一性检查",
+    "需要实现元数据管理",
+    "需要实现铸造权限控制",
+    "需要实现NFT所有权映射",
+    "需要实现道具属性更新"
+  ],
+  "prerequisites": [
+    "完成 Basic NFT 学习模板",
+    "了解 NFT 基本概念",
+    "了解游戏道具应用场景"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function MintNFT --params '{\"to\":\"<address>\",\"token_id\":\"item_001\",\"name\":\"Legendary Sword\",\"type\":\"weapon\"}'",
+    "wes contract call <contract_address> --function TransferNFT --params '{\"to\":\"<address>\",\"token_id\":\"item_001\"}'",
+    "wes contract call <contract_address> --function QueryNFT --params '{\"token_id\":\"item_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

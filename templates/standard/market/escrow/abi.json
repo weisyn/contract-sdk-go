@@ -1,0 +1,80 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Escrow",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "buyer",
+          "type": "address",
+          "required": true,
+          "description": "买方地址"
+        },
+        {
+          "name": "seller",
+          "type": "address",
+          "required": true,
+          "description": "卖方地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "托管金额"
+        },
+        {
+          "name": "escrow_id",
+          "type": "string",
+          "required": true,
+          "description": "托管ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "创建代币托管，自动处理余额检查和资产锁定",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Release",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "from",
+          "type": "address",
+          "required": true,
+          "description": "发送者地址"
+        },
+        {
+          "name": "beneficiary",
+          "type": "address",
+          "required": true,
+          "description": "受益人地址"
+        },
+        {
+          "name": "total_amount",
+          "type": "number",
+          "required": true,
+          "description": "总释放金额"
+        },
+        {
+          "name": "vesting_id",
+          "type": "string",
+          "required": true,
+          "description": "释放计划ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "创建分阶段释放计划，适用于分红、租金分配等",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+

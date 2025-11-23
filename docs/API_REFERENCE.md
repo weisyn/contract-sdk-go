@@ -407,13 +407,69 @@ type Amount uint64
 
 ## ⚠️ 错误码
 
-| 错误码 | 常量 | 说明 |
-|--------|------|------|
+### 标准错误码定义
+
+合约 SDK 使用统一的错误码集合，与 JS SDK 完全对齐。所有错误码均为 `uint32` 类型。
+
+| 错误码 | 常量名 | 说明 |
+|--------|--------|------|
 | 0 | `SUCCESS` | 成功 |
 | 1 | `ERROR_INVALID_PARAMS` | 参数无效 |
 | 2 | `ERROR_INSUFFICIENT_BALANCE` | 余额不足 |
-| 3 | `ERROR_EXECUTION_FAILED` | 执行失败 |
-| 4 | `ERROR_PERMISSION_DENIED` | 权限不足 |
+| 3 | `ERROR_UNAUTHORIZED` | 未授权 |
+| 4 | `ERROR_NOT_FOUND` | 资源不存在 |
+| 5 | `ERROR_ALREADY_EXISTS` | 资源已存在 |
+| 6 | `ERROR_EXECUTION_FAILED` | 执行失败 |
+| 7 | `ERROR_INVALID_STATE` | 状态无效 |
+| 8 | `ERROR_TIMEOUT` | 超时 |
+| 9 | `ERROR_NOT_IMPLEMENTED` | 未实现 |
+| 10 | `ERROR_PERMISSION_DENIED` | 权限不足 |
+| 999 | `ERROR_UNKNOWN` | 未知错误 |
+
+### 错误码映射表
+
+合约执行时，错误码会被区块链服务层（weisyn.git）捕获并转换为 WES Problem Details 格式。下表展示了完整的映射关系：
+
+| 合约错误码 | WES 错误码 | HTTP 状态码 | 用户消息 |
+|-----------|-----------|-----------|---------|
+| `SUCCESS` (0) | - | 200 | - |
+| `ERROR_INVALID_PARAMS` (1) | `COMMON_VALIDATION_ERROR` | 400 | 参数验证失败，请检查输入参数。 |
+| `ERROR_INSUFFICIENT_BALANCE` (2) | `BC_INSUFFICIENT_BALANCE` | 422 | 余额不足，无法完成交易。 |
+| `ERROR_UNAUTHORIZED` (3) | `COMMON_VALIDATION_ERROR` | 401 | 未授权操作，请检查权限。 |
+| `ERROR_NOT_FOUND` (4) | `BC_CONTRACT_NOT_FOUND` | 404 | 资源不存在。 |
+| `ERROR_ALREADY_EXISTS` (5) | `COMMON_VALIDATION_ERROR` | 409 | 资源已存在。 |
+| `ERROR_EXECUTION_FAILED` (6) | `BC_CONTRACT_INVOCATION_FAILED` | 422 | 合约执行失败，请检查合约逻辑。 |
+| `ERROR_INVALID_STATE` (7) | `BC_CONTRACT_INVOCATION_FAILED` | 422 | 合约状态无效，请检查合约状态。 |
+| `ERROR_TIMEOUT` (8) | `COMMON_TIMEOUT` | 408 | 执行超时，请稍后重试。 |
+| `ERROR_NOT_IMPLEMENTED` (9) | `BC_CONTRACT_INVOCATION_FAILED` | 501 | 功能未实现。 |
+| `ERROR_PERMISSION_DENIED` (10) | `COMMON_VALIDATION_ERROR` | 403 | 权限不足，无法执行此操作。 |
+| `ERROR_UNKNOWN` (999) | `COMMON_INTERNAL_ERROR` | 500 | 未知错误，请稍后重试或联系管理员。 |
+
+### 错误处理工具
+
+SDK 提供了错误码映射函数（位于 `framework/error_mapping.go`，仅在非合约环境中编译）：
+
+```go
+// 将合约错误码映射到 WES 错误码
+wesCode := framework.ContractErrorCodeToWESCode(framework.ERROR_INSUFFICIENT_BALANCE)
+// wesCode = "BC_INSUFFICIENT_BALANCE"
+
+// 获取用户友好的消息
+userMsg := framework.ContractErrorCodeToUserMessage(framework.ERROR_INSUFFICIENT_BALANCE)
+// userMsg = "余额不足，无法完成交易。"
+
+// 获取 HTTP 状态码
+httpStatus := framework.ContractErrorCodeToHTTPStatus(framework.ERROR_INSUFFICIENT_BALANCE)
+// httpStatus = 422
+```
+
+### 错误处理流程
+
+1. **合约执行时**：合约返回错误码（`uint32`）
+2. **区块链服务层**：捕获错误码并转换为 Problem Details
+3. **客户端**：接收 Problem Details 格式的错误响应
+
+更多详细信息，请参考 [WES Error Specification 实施文档](./WES_ERROR_SPEC_IMPLEMENTATION.md)。
 
 ---
 

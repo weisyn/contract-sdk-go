@@ -1,0 +1,64 @@
+{
+  "id": "liquidity-pool",
+  "name": "Liquidity Pool",
+  "category": "DeFi",
+  "description": "流动性池合约，实现完整的流动性池功能，包括添加流动性、移除流动性、查询池信息等",
+  "tags": [
+    "standard",
+    "defi",
+    "liquidity-pool",
+    "lp",
+    "yield"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token",
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "代币ID（AddLiquidity/RemoveLiquidity/QueryPoolInfo）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "代币数量（AddLiquidity）"
+    },
+    {
+      "name": "lp_token_amount",
+      "type": "number",
+      "required": true,
+      "description": "LP Token数量（RemoveLiquidity）"
+    }
+  ],
+  "risks": [
+    "需要实现流动性份额计算",
+    "需要实现收益分配机制",
+    "需要实现流动性凭证代币管理（铸造、销毁、交易）"
+  ],
+  "prerequisites": [
+    "完成 ERC-20 Token 模板",
+    "了解流动性池工作原理",
+    "了解LP Token概念"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function AddLiquidity --params '{\"token_id\":\"TOKEN_001\",\"amount\":10000}'",
+    "wes contract call <contract_address> --function RemoveLiquidity --params '{\"token_id\":\"TOKEN_001\",\"lp_token_amount\":100}'",
+    "wes contract call <contract_address> --function QueryPoolInfo --params '{\"token_id\":\"TOKEN_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

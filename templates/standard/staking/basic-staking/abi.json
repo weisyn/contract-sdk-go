@@ -1,0 +1,98 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Stake",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "validator",
+          "type": "address",
+          "required": true,
+          "description": "验证者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "质押数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "代币质押，自动处理余额检查和交易构建",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Unstake",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "validator",
+          "type": "address",
+          "required": true,
+          "description": "验证者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "解质押数量（0表示全部）"
+        }
+      ],
+      "returnType": "number",
+      "description": "解质押代币，支持部分或全部解质押",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Delegate",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "validator",
+          "type": "address",
+          "required": true,
+          "description": "验证者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "委托数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "将质押权委托给验证者",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Undelegate",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "validator",
+          "type": "address",
+          "required": true,
+          "description": "验证者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "取消委托数量（0表示全部）"
+        }
+      ],
+      "returnType": "number",
+      "description": "取消委托，支持部分或全部取消委托",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+

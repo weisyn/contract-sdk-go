@@ -1,0 +1,76 @@
+{
+  "id": "commercial",
+  "name": "Commercial Real Estate",
+  "category": "RWA",
+  "description": "商业地产代币化合约，使用 ISPC 受控机制验证和代币化商业地产，实现写字楼、商场、酒店等的链上管理和交易",
+  "tags": [
+    "standard",
+    "rwa",
+    "real-estate",
+    "commercial",
+    "property"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "rwa",
+    "token",
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "asset_id",
+      "type": "string",
+      "required": true,
+      "description": "资产ID（TokenizeCommercial）"
+    },
+    {
+      "name": "total_supply",
+      "type": "number",
+      "required": true,
+      "description": "总供应量（TokenizeCommercial）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "代币ID"
+    },
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（TransferCommercial）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "转移数量（TransferCommercial）"
+    }
+  ],
+  "risks": [
+    "需要实现房产验证逻辑（验证服务）",
+    "需要实现房产估值逻辑（估值服务）",
+    "需要实现租金计算（租金率、分配规则等）"
+  ],
+  "prerequisites": [
+    "了解 RWA 代币化概念",
+    "了解 ISPC 受控外部交互机制",
+    "了解房产验证和估值流程"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function TokenizeCommercial --params '{\"asset_id\":\"commercial_001\",\"total_supply\":1000000,\"token_id\":\"COMMERCIAL_001\"}'",
+    "wes contract call <contract_address> --function TransferCommercial --params '{\"to\":\"<address>\",\"token_id\":\"COMMERCIAL_001\",\"amount\":1000}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

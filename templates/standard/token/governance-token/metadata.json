@@ -1,0 +1,76 @@
+{
+  "id": "governance-token",
+  "name": "Governance Token",
+  "category": "Token",
+  "description": "治理代币合约，持有者可以使用代币进行投票，参与去中心化治理，支持代币铸造、转移、委托和投票功能",
+  "tags": [
+    "standard",
+    "token",
+    "governance",
+    "dao",
+    "voting"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token",
+    "governance"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（Mint/Transfer）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "代币数量"
+    },
+    {
+      "name": "delegate",
+      "type": "address",
+      "required": true,
+      "description": "被委托地址（DelegateVotingPower）"
+    },
+    {
+      "name": "proposal_id",
+      "type": "string",
+      "required": true,
+      "description": "提案ID（VoteWithTokens）"
+    },
+    {
+      "name": "support",
+      "type": "boolean",
+      "required": true,
+      "description": "是否支持提案（VoteWithTokens）"
+    }
+  ],
+  "risks": [
+    "需要实现委托关系管理（使用状态输出存储）",
+    "需要实现投票权重计算（考虑委托的代币数量）",
+    "需要实现铸造权限控制"
+  ],
+  "prerequisites": [
+    "完成 ERC-20 Token 模板",
+    "了解治理代币概念",
+    "了解 DAO 治理机制"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Mint --params '{\"to\":\"<address>\",\"amount\":1000}'",
+    "wes contract call <contract_address> --function DelegateVotingPower --params '{\"delegate\":\"<address>\",\"amount\":500}'",
+    "wes contract call <contract_address> --function VoteWithTokens --params '{\"proposal_id\":\"proposal_123\",\"support\":true}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

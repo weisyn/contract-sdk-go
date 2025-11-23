@@ -1,0 +1,81 @@
+run:
+  timeout: 5m
+  concurrency: 4
+  tests: false
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gocritic
+    - gosec
+    - misspell
+    - unparam
+    - revive
+    - prealloc
+    - typecheck
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  gosec:
+    severity: medium
+    confidence: medium
+    # 允许 unsafe.Pointer 在 WASM 环境中的使用（合约 SDK 需要）
+    exclude:
+      - "G103: Use of unsafe calls should be audited"
+  revive:
+    min-confidence: 0.8
+
+issues:
+  exclude-dirs:
+    - vendor
+    - templates
+  exclude-files:
+    - ".*\\.pb\\.go$"
+    - ".*_test\\.go$"
+  exclude-rules:
+    - path: _test\.go$
+      linters:
+        - errcheck
+        - gosec
+      text: "Error return value of .* is not checked"
+    # 合约框架中需要使用 unsafe.Pointer（WASM 环境）
+    - path: framework/.*\.go$
+      linters:
+        - gosec
+      text: "possible misuse of unsafe.Pointer"
+    # host_functions_stub.go 在非 WASM 构建中，类型定义在文件前面
+    - path: framework/host_functions_stub.go
+      linters:
+        - revive
+      text: "undefined:"
+    # host_functions_stub.go 是 stub 文件，未使用的参数和函数是预期的
+    - path: framework/host_functions_stub.go
+      linters:
+        - revive
+        - unused
+        - unparam
+      text: ".*"
+    # host_functions_stub.go 中的错误码常量使用 ALL_CAPS 是合理的
+    - path: framework/host_functions_stub.go
+      linters:
+        - revive
+      text: "don't use ALL_CAPS in Go names"
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
+  fix: false
+
+output:
+  formats:
+    - format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  print-welcome: false
+

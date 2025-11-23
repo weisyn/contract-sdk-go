@@ -1,0 +1,77 @@
+{
+  "id": "intellectual-property",
+  "name": "Intellectual Property",
+  "category": "RWA",
+  "description": "知识产权代币化合约，使用 ISPC 受控机制验证和代币化知识产权，实现专利、版权、商标等的链上管理和交易",
+  "tags": [
+    "standard",
+    "rwa",
+    "ip",
+    "patent",
+    "copyright",
+    "trademark"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "rwa",
+    "token",
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "asset_id",
+      "type": "string",
+      "required": true,
+      "description": "资产ID（TokenizeIP）"
+    },
+    {
+      "name": "total_supply",
+      "type": "number",
+      "required": true,
+      "description": "总供应量（TokenizeIP）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "代币ID"
+    },
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（TransferIP）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "转移数量（TransferIP）"
+    }
+  ],
+  "risks": [
+    "需要实现知识产权验证逻辑（验证服务）",
+    "需要实现知识产权估值逻辑（估值服务）",
+    "需要实现许可费计算（许可费率、分配规则等）"
+  ],
+  "prerequisites": [
+    "了解 RWA 代币化概念",
+    "了解 ISPC 受控外部交互机制",
+    "了解知识产权验证和估值流程"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function TokenizeIP --params '{\"asset_id\":\"ip_001\",\"total_supply\":1000000,\"token_id\":\"IP_001\"}'",
+    "wes contract call <contract_address> --function TransferIP --params '{\"to\":\"<address>\",\"token_id\":\"IP_001\",\"amount\":1000}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

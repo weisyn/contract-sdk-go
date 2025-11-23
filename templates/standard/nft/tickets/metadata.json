@@ -1,0 +1,69 @@
+{
+  "id": "tickets",
+  "name": "Tickets",
+  "category": "NFT",
+  "description": "门票票务NFT合约，实现演唱会、体育赛事、会议等的票务管理",
+  "tags": [
+    "standard",
+    "nft",
+    "ticket",
+    "event",
+    "ticketing"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintTicket）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "门票唯一标识"
+    },
+    {
+      "name": "ticket_name",
+      "type": "string",
+      "required": true,
+      "description": "门票名称"
+    },
+    {
+      "name": "event",
+      "type": "string",
+      "required": true,
+      "description": "活动名称"
+    }
+  ],
+  "risks": [
+    "需要实现门票验证（验证门票有效性）",
+    "需要实现门票使用标记（使用后标记）",
+    "需要验证所有输入参数"
+  ],
+  "prerequisites": [
+    "完成 Basic NFT 学习模板",
+    "了解 NFT 基本概念",
+    "了解票务应用场景"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function MintTicket --params '{\"to\":\"<address>\",\"token_id\":\"TICKET_001\",\"ticket_name\":\"Concert Ticket\",\"event\":\"Music Festival 2025\"}'",
+    "wes contract call <contract_address> --function TransferTicket --params '{\"to\":\"<address>\",\"token_id\":\"TICKET_001\"}'",
+    "wes contract call <contract_address> --function QueryTicket --params '{\"token_id\":\"TICKET_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

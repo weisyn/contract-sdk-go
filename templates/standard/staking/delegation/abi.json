@@ -1,0 +1,77 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Delegate",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "validator",
+          "type": "address",
+          "required": true,
+          "description": "验证者地址"
+        },
+        {
+          "name": "delegatee",
+          "type": "address",
+          "required": true,
+          "description": "被委托者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "委托数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "将质押权委托给验证者",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Undelegate",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "validator",
+          "type": "address",
+          "required": true,
+          "description": "验证者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "取消委托数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "取消委托，收回质押权",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "QueryDelegation",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "validator",
+          "type": "address",
+          "required": true,
+          "description": "验证者地址"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询委托关系的详细信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

@@ -1,0 +1,76 @@
+{
+  "id": "equity",
+  "name": "Equity",
+  "category": "RWA",
+  "description": "股权代币化合约，使用 ISPC 受控机制验证和代币化股权，实现公司股权的链上管理和交易",
+  "tags": [
+    "standard",
+    "rwa",
+    "equity",
+    "stock",
+    "share"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "rwa",
+    "token",
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "asset_id",
+      "type": "string",
+      "required": true,
+      "description": "资产ID（TokenizeEquity）"
+    },
+    {
+      "name": "total_supply",
+      "type": "number",
+      "required": true,
+      "description": "总供应量（TokenizeEquity）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "代币ID"
+    },
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（TransferEquity）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "转移数量（TransferEquity）"
+    }
+  ],
+  "risks": [
+    "需要实现股权验证逻辑（验证服务）",
+    "需要实现股权估值逻辑（估值服务）",
+    "需要实现合规检查（KYC/AML）"
+  ],
+  "prerequisites": [
+    "了解 RWA 代币化概念",
+    "了解 ISPC 受控外部交互机制",
+    "了解股权验证和估值流程"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function TokenizeEquity --params '{\"asset_id\":\"equity_001\",\"total_supply\":1000000,\"token_id\":\"EQUITY_001\"}'",
+    "wes contract call <contract_address> --function TransferEquity --params '{\"to\":\"<address>\",\"token_id\":\"EQUITY_001\",\"amount\":1000}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

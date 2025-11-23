@@ -1,0 +1,83 @@
+{
+  "id": "dao",
+  "name": "DAO",
+  "category": "Governance",
+  "description": "DAO治理合约，实现完整的DAO治理功能，包括提案创建、投票、执行等",
+  "tags": [
+    "standard",
+    "governance",
+    "dao",
+    "voting",
+    "proposal"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "governance",
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "proposal_id",
+      "type": "string",
+      "required": true,
+      "description": "提案ID"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": true,
+      "description": "提案标题（CreateProposal）"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false,
+      "description": "提案描述（CreateProposal）"
+    },
+    {
+      "name": "voting_period",
+      "type": "number",
+      "required": false,
+      "description": "投票期限（秒）（CreateProposal）"
+    },
+    {
+      "name": "threshold",
+      "type": "number",
+      "required": false,
+      "description": "通过阈值（百分比）（CreateProposal）"
+    },
+    {
+      "name": "support",
+      "type": "boolean",
+      "required": true,
+      "description": "是否支持提案（Vote）"
+    }
+  ],
+  "risks": [
+    "需要实现提案管理（使用状态输出）",
+    "需要实现投票结果统计",
+    "需要实现提案执行逻辑",
+    "需要实现投票权重计算（考虑委托）"
+  ],
+  "prerequisites": [
+    "完成 Governance Token 模板",
+    "了解 DAO 治理机制",
+    "了解提案和投票流程"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function CreateProposal --params '{\"proposal_id\":\"proposal_001\",\"title\":\"Proposal Title\",\"voting_period\":604800,\"threshold\":50}'",
+    "wes contract call <contract_address> --function Vote --params '{\"proposal_id\":\"proposal_001\",\"support\":true}'",
+    "wes contract call <contract_address> --function ExecuteProposal --params '{\"proposal_id\":\"proposal_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}
