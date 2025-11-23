@@ -11,7 +11,7 @@
 
 **按角色快速找到你需要的文档**
 
-[👨‍💻 合约开发者](#-合约开发者) • [🏗️ 架构师/贡献者](#️-架构师贡献者) • [🌐 平台文档索引](#-平台文档索引) • [📖 参考文档](#-参考文档)
+[👨‍💻 合约开发者](#-合约开发者) • [🏗️ 架构师/贡献者](#️-架构师贡献者) • [📖 参考文档](#-参考文档)
 
 </div>
 
@@ -37,7 +37,7 @@ graph TB
         S2[DEVELOPER_GUIDE.md<br/>Go SDK 开发者指南]
         S3[API_REFERENCE.md<br/>Go SDK API 参考]
         S4[BUSINESS_SCENARIOS.md<br/>Go SDK 业务场景实现]
-        S5[STRUCTURE_DESIGN.md<br/>SDK 内部分层架构]
+        S5[SDK_ARCHITECTURE.md<br/>SDK 内部分层架构]
     end
     
     subgraph MAIN["📖 主 README.md"]
@@ -101,7 +101,7 @@ graph LR
 
 **推荐路径**：
 1. **[主 README](../README.md)** - 了解 SDK 是什么，30秒上手
-2. **[合约模板](../README.md#-合约模板)** - 使用模板快速创建项目
+2. **[合约模板](../templates/README.md)** - 使用模板快速创建项目
 3. **[开发者指南](./DEVELOPER_GUIDE.md)** - 深入学习核心概念和开发模式
 4. **[业务场景实现指南](./BUSINESS_SCENARIOS.md)** - 学习如何实现业务场景
 5. **[API 参考](./API_REFERENCE.md)** - 查阅详细的 API 文档
@@ -152,6 +152,11 @@ graph LR
   - 环境查询、事件日志
   - 交易构建（内部实现）
 
+- ⚠️ **[语言与 WASM 限制](./LANGUAGE_AND_WASM_LIMITATIONS.md)** - Go/TinyGo 特有的限制和注意事项
+  - TinyGo 支持矩阵
+  - Unsafe 指针注意事项
+  - WASM 环境限制
+
 ---
 
 ## 🏗️ 架构师/贡献者
@@ -160,7 +165,7 @@ graph LR
 
 #### 核心设计文档（P1）
 
-- 🏗️ **[整体结构设计](./STRUCTURE_DESIGN.md)** - SDK 内部分层架构设计
+- 🏗️ **[SDK 内部架构](./SDK_ARCHITECTURE.md)** - SDK 内部分层架构设计
   - **聚焦 SDK 自身**：helpers 分层、framework 层设计
   - **引用平台架构**：WES 7 层架构请参考主仓库文档
   - 模块组织方式、依赖关系说明、设计决策记录
@@ -190,70 +195,25 @@ graph LR
 
 ---
 
-## 🌐 平台文档索引（来自主仓库）
-
-> 📌 **重要说明**：以下文档来自 `weisyn.git/docs`，是平台级文档的权威版本。  
-> SDK 文档会引用这些文档，但不会重复其内容。如需了解平台级概念、架构、规范，请查阅这些文档。
-
-### 智能合约平台文档
-
-**平台总览**：
-- [智能合约平台文档](../../../weisyn.git/docs/system/platforms/contracts/README.md) - 智能合约平台的综合文档
-
-**平台子文档**：
-- [市场价值](../../../weisyn.git/docs/system/platforms/contracts/market-value.md) - 市场价值和商业潜力
-- [产品设计](../../../weisyn.git/docs/system/platforms/contracts/product-design.md) - 产品特性和用户体验（包含 SDK 设计）
-- [技术架构](../../../weisyn.git/docs/system/platforms/contracts/technical-architecture.md) - 技术实现架构
-- [应用场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md) - 实际应用案例（包含 SDK 示例）
-- [快速开始](../../../weisyn.git/docs/system/platforms/contracts/getting-started.md) - 开发者快速入门
-
-### ISPC 核心组件文档
-
-**ISPC 总览**：
-- [ISPC 组件文档](../../../weisyn.git/docs/components/core/ispc/README.md) - ISPC 核心范式和实现细节
-
-**ISPC 子文档**：
-- [WASM 引擎文档](../../../weisyn.git/docs/components/core/ispc/capabilities/unified-engines.md) - WASM 执行引擎架构
-- [HostABI 文档](../../../weisyn.git/docs/components/core/ispc/capabilities/hostabi-primitives.md) - HostABI 17个原语设计
-- [ZK 证明文档](../../../weisyn.git/docs/components/core/ispc/capabilities/zk-proof.md) - ZK 证明生成与验证
-- [受控外部交互](../../../weisyn.git/docs/components/core/ispc/capabilities/external-interaction.md) - 受控外部交互机制
-
-### 合约教程文档
-
-**教程总览**：
-- [合约教程](../../../weisyn.git/docs/tutorials/contracts/CONCEPTS.md) - 合约开发教程
-
-**教程子文档**：
-- [合约核心概念](../../../weisyn.git/docs/tutorials/contracts/CONCEPTS.md) - 核心概念解释
-- [合约学习路径](../../../weisyn.git/docs/tutorials/contracts/LEARNING_PATH.md) - 分阶段学习路径
-- [初学者指南](../../../weisyn.git/docs/tutorials/contracts/BEGINNER_GUIDE.md) - 详细初学者教程
-- [WASM 环境说明](../../../weisyn.git/docs/tutorials/contracts/wasm-environment.md) - WASM 环境详解
-- [集成测试指南](../../../weisyn.git/docs/tutorials/contracts/integration-testing.md) - 合约集成测试
-
-### 错误规范文档
-
-**错误规范总览**：
-- [WES Error Specification](../../../weisyn.git/docs/error-spec/README.md) - 错误规范总览
-
-**错误规范子文档**：
-- [错误码定义](../../../weisyn.git/docs/error-spec/wes-error-codes.yaml) - 错误码定义文件
-- [Problem Details 规范](../../../weisyn.git/docs/error-spec/wes-problem-details.md) - Problem Details 格式规范
-- [实施报告](../../../weisyn.git/docs/error-spec/IMPLEMENTATION_SUMMARY.md) - 实施总结
-
-### 系统架构文档
-
-- [WES 系统架构](../../../weisyn.git/docs/system/architecture/1-STRUCTURE_VIEW.md) - 系统架构详解
-- [WES 主 README](../../../weisyn.git/README.md) - WES 项目总览
-
----
-
 ## 📖 参考文档
 
 ### SDK 参考文档（本仓库）
 
-- ⚠️ **[Unsafe 指针警告](./UNSAFE_POINTER_WARNINGS.md)** - Go / TinyGo 特有的 Unsafe 指针注意事项
-  - 这是 Go/TinyGo 特有、且非常 SDK 本地化的内容
-  - 在 `DEVELOPER_GUIDE.md` 的"编译 & 性能 & 限制"小节中也有引用
+- ⚠️ **[语言与 WASM 限制](./LANGUAGE_AND_WASM_LIMITATIONS.md)** - Go/TinyGo 特有的限制和注意事项
+  - TinyGo 支持矩阵
+  - Unsafe 指针注意事项
+  - WASM 环境限制
+  - 禁止使用的标准库
+
+- 🔧 **[WES Error Spec 实施](./WES_ERROR_SPEC_IMPLEMENTATION.md)** - Go SDK 如何对接错误规范
+  - 错误码映射
+  - 错误处理模式
+  - **引用平台文档**：WES Error Specification 请参考主仓库文档
+
+- 📋 **[文档体系说明](./DOCUMENTATION_STRUCTURE.md)** - 文档体系与分层说明
+  - SDK 文档与平台文档的关系
+  - 文档组织结构
+  - 与根 README 的映射关系
 
 ### 平台参考文档（主仓库）
 
@@ -288,7 +248,7 @@ graph TB
 ```
 
 1. **[主 README](../README.md)** - 了解 SDK 是什么，30秒上手
-2. **[合约模板](../README.md#-合约模板)** - 使用模板快速创建项目
+2. **[合约模板](../templates/README.md)** - 使用模板快速创建项目
 3. **[开发者指南](./DEVELOPER_GUIDE.md)** - 深入学习核心概念
 4. **[示例代码](../templates/README.md)** - 参考实际应用示例
 5. **平台文档**（主仓库）- 如需了解平台概念，参考平台文档
@@ -316,7 +276,7 @@ graph LR
 
 ```mermaid
 graph TB
-    A[SDK 架构] --> B[整体结构设计]
+    A[SDK 架构] --> B[SDK 内部架构]
     B --> C[ISPC 创新分析]
     C --> D[HostABI 规范<br/>主仓库]
     
@@ -327,7 +287,7 @@ graph TB
 ```
 
 1. **[SDK 架构](../README.md#-架构概览)** - 理解分层架构
-2. **[整体结构设计](./STRUCTURE_DESIGN.md)** - 了解架构设计决策
+2. **[SDK 内部架构](./SDK_ARCHITECTURE.md)** - 了解架构设计决策
 3. **[ISPC 创新分析](./ISPC_INNOVATION_ANALYSIS.md)** - 理解 Go SDK 如何使用 ISPC
 4. **[HostABI 规范](../../../weisyn.git/docs/components/core/ispc/capabilities/hostabi-primitives.md)** - 深入底层能力（主仓库）
 
@@ -351,7 +311,7 @@ graph TB
 
 | 文档 | 说明 | 优先级 |
 |------|------|--------|
-| 🏗️ [整体结构设计](./STRUCTURE_DESIGN.md) | SDK 内部分层架构设计 | P1 |
+| 🏗️ [SDK 内部架构](./SDK_ARCHITECTURE.md) | SDK 内部分层架构设计 | P1 |
 | 📊 [应用场景分析](./APPLICATION_SCENARIOS_ANALYSIS.md) | SDK 职责边界分析 | P1 |
 | 📈 [架构规划](./ARCHITECTURE_PLAN.md) | Go SDK 架构规划文档 | P2 |
 | 🔮 [ISPC 创新分析](./ISPC_INNOVATION_ANALYSIS.md) | Go SDK 如何使用 ISPC | P1 |
@@ -361,7 +321,9 @@ graph TB
 
 | 文档 | 说明 | 来源 |
 |------|------|------|
-| ⚠️ [Unsafe 指针警告](./UNSAFE_POINTER_WARNINGS.md) | Go/TinyGo Unsafe 指针注意事项 | SDK 文档 |
+| ⚠️ [语言与 WASM 限制](./LANGUAGE_AND_WASM_LIMITATIONS.md) | Go/TinyGo 限制和注意事项 | SDK 文档 |
+| 🔧 [WES Error Spec 实施](./WES_ERROR_SPEC_IMPLEMENTATION.md) | Go SDK 如何对接错误规范 | SDK 文档 |
+| 📋 [文档体系说明](./DOCUMENTATION_STRUCTURE.md) | 文档体系与分层说明 | SDK 文档 |
 | 📘 [HostABI 规范](../../../weisyn.git/docs/components/core/ispc/capabilities/hostabi-primitives.md) | HostABI 原语能力 | 主仓库 |
 | 🔗 [接口映射](../../../weisyn.git/docs/reference/contracts/pkg-interfaces-to-hostabi-mapping.md) | pkg/interfaces 到 Host ABI 映射 | 主仓库 |
 | 🔧 [工具链版本矩阵](../../../weisyn.git/docs/reference/contracts/toolchain-version-matrix.md) | 工具链版本要求 | 主仓库 |
@@ -417,3 +379,4 @@ graph TB
 
 **最后更新**: 2025-01-23  
 **维护者**: WES Core Team
+

@@ -229,7 +229,7 @@ data, err := external.CallAPI(
 
 ## 🏗️ 架构概览
 
-> 📖 **完整架构文档**：详见 [架构设计文档](./docs/STRUCTURE_DESIGN.md) | [架构规划文档](./docs/ARCHITECTURE_PLAN.md)
+> 📖 **完整架构文档**：详见 [架构设计文档](./docs/SDK_ARCHITECTURE.md) | [架构规划文档](./docs/ARCHITECTURE_PLAN.md)
 
 ### 在 WES 7 层架构中的位置
 
@@ -355,7 +355,7 @@ graph TB
 
 **🏗️ 架构师/贡献者**
 
-- [架构概览](#-架构概览) → [文档中心](./docs/README.md) → [架构设计文档](./docs/STRUCTURE_DESIGN.md)
+- [架构概览](#-架构概览) → [文档中心](./docs/README.md) → [架构设计文档](./docs/SDK_ARCHITECTURE.md)
 
 **📚 深入理解**
 
@@ -370,7 +370,7 @@ graph TB
 | 🚀 **[开发者指南](./docs/DEVELOPER_GUIDE.md)** | 如何使用 SDK 开发合约 | 合约开发者 |
 | 📚 **[API 参考](./docs/API_REFERENCE.md)** | SDK 接口详细说明 | 合约开发者 |
 | 🎯 **[业务场景实现指南](./docs/BUSINESS_SCENARIOS.md)** | 如何实现业务场景 | 合约开发者 |
-| 🏗️ **[架构设计文档](./docs/STRUCTURE_DESIGN.md)** | SDK 架构设计讨论 | 架构师/贡献者 |
+| 🏗️ **[架构设计文档](./docs/SDK_ARCHITECTURE.md)** | SDK 架构设计讨论 | 架构师/贡献者 |
 
 ### 🔗 模块文档
 

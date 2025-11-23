@@ -1,4 +1,4 @@
-# Contract SDK Go - 文档结构总览与定位说明
+# Contract SDK Go - 文档体系与分层说明
 
 **版本**: v1.0.0  
 **最后更新**: 2025-01-23
@@ -14,22 +14,23 @@ contract-sdk-go/
 ├── README.md                    # ⭐ 主入口：用户友好的 SDK 总览
 ├── docs/
 │   ├── README.md               # 📚 文档中心：文档索引和导航
+│   ├── DOCUMENTATION_STRUCTURE.md # 📋 本文档：文档体系说明
 │   ├── DEVELOPER_GUIDE.md      # 📖 开发者指南：如何使用 SDK
 │   ├── API_REFERENCE.md        # 📚 API 参考：接口详细说明
 │   ├── BUSINESS_SCENARIOS.md  # 🎯 业务场景：如何实现业务场景
-│   ├── STRUCTURE_DESIGN.md    # 🏗️ 架构设计：整体结构讨论
+│   ├── SDK_ARCHITECTURE.md    # 🏗️ 架构设计：整体结构讨论
 │   ├── APPLICATION_SCENARIOS_ANALYSIS.md  # 📊 场景分析：职责边界
 │   ├── ARCHITECTURE_PLAN.md    # 📈 架构规划：未来演进
 │   ├── ISPC_INNOVATION_ANALYSIS.md  # 🔮 ISPC 分析：技术深度
 │   ├── SCENARIOS_VISUAL_GUIDE.md    # 📐 可视化指南：场景图表
-│   ├── UNSAFE_POINTER_WARNINGS.md   # ⚠️ 警告文档：注意事项
-│   └── DOCUMENTATION_STRUCTURE.md   # 📋 本文档：文档结构说明
+│   ├── WES_ERROR_SPEC_IMPLEMENTATION.md   # 🔧 错误规范实施
+│   └── LANGUAGE_AND_WASM_LIMITATIONS.md   # ⚠️ 语言限制：注意事项
 ├── helpers/
 │   └── README.md               # 🔧 Helpers 层文档：业务语义层说明
 ├── framework/
 │   └── README.md               # 🏗️ Framework 层文档：框架层说明
-└── examples/
-    └── README.md               # 💡 示例代码：示例索引和指南
+└── templates/
+    └── README.md               # 💡 合约模板：模板索引和指南
 ```
 
 ---
@@ -48,8 +49,8 @@ contract-sdk-go/
 - ✅ **文档导航**：按角色组织文档链接，指向文档中心
 
 **特点**：
-- 📏 **长度控制**：约 300 行，保持简洁
-- 🎨 **视觉友好**：参考 WES 主 README 的风格，使用醒目的标题和标语
+- 📏 **长度控制**：约 300-500 行，保持简洁
+- 🎨 **视觉友好**：使用醒目的标题和标语
 - 🚀 **快速上手**：优先展示快速开始，而非深入细节
 - 🔗 **导航清晰**：提供清晰的文档导航，指向详细文档
 
@@ -59,11 +60,7 @@ contract-sdk-go/
 **与其他文档的关系**：
 - 指向 `docs/README.md` 作为文档中心
 - 指向 `docs/DEVELOPER_GUIDE.md` 作为深入学习的入口
-- 指向 `examples/README.md` 作为示例代码入口
-
-**参考**：
-- WES 主 README.md 的风格和结构
-- 突出核心价值，快速上手，清晰的导航
+- 指向 `templates/README.md` 作为模板入口
 
 ---
 
@@ -99,6 +96,173 @@ contract-sdk-go/
 
 ---
 
+### 3. 开发者指南（`docs/DEVELOPER_GUIDE.md`）
+
+**定位**：Go SDK 视角的合约开发指南
+
+**职责**：
+- ✅ **安装与环境**：Go/TinyGo 环境设置
+- ✅ **开发流程**：从模板到部署的完整流程
+- ✅ **核心概念**：合约生命周期、参数解析、错误处理
+- ✅ **开发模式**：常见开发模式和最佳实践
+- ✅ **引用平台文档**：平台概念指向主仓库文档
+
+**目标受众**：
+- 合约开发者（主要）
+- 新手开发者
+
+**与其他文档的关系**：
+- 引用 `API_REFERENCE.md` 作为 API 详细说明
+- 引用 `BUSINESS_SCENARIOS.md` 作为场景实现参考
+- 引用 `LANGUAGE_AND_WASM_LIMITATIONS.md` 作为限制说明
+- 引用平台文档作为概念解释
+
+---
+
+### 4. API 参考（`docs/API_REFERENCE.md`）
+
+**定位**：Go SDK 接口详细说明
+
+**职责**：
+- ✅ **Framework 层 API**：环境查询、事件日志、基础能力
+- ✅ **Helpers 层 API**：业务语义接口（Token、Staking、Governance 等）
+- ✅ **接口参数和返回值**：详细的类型定义和使用示例
+- ✅ **引用平台文档**：HostABI 原语能力指向主仓库文档
+
+**目标受众**：
+- 合约开发者（主要）
+- 架构师（了解 API 设计）
+
+**与其他文档的关系**：
+- 被 `DEVELOPER_GUIDE.md` 引用
+- 被 `BUSINESS_SCENARIOS.md` 引用
+- 引用平台文档作为底层能力说明
+
+---
+
+### 5. 业务场景实现指南（`docs/BUSINESS_SCENARIOS.md`）
+
+**定位**：如何使用 Go SDK 实现业务场景
+
+**职责**：
+- ✅ **场景前半部分**：链接到主仓库对应场景文档
+- ✅ **场景后半部分**：Go SDK 版本的实现建议 + 模板指引 + 关键 API
+- ✅ **场景覆盖**：电商、制造业、DeFi、NFT 等主要场景
+
+**目标受众**：
+- 合约开发者（主要）
+- 产品负责人（了解场景支持）
+
+**与其他文档的关系**：
+- 引用主仓库场景文档作为业务流说明
+- 引用 `DEVELOPER_GUIDE.md` 作为开发流程
+- 引用 `API_REFERENCE.md` 作为 API 说明
+- 引用 `templates/README.md` 作为模板指引
+
+---
+
+### 6. SDK 内部架构（`docs/SDK_ARCHITECTURE.md`）
+
+**定位**：SDK 内部分层架构设计
+
+**职责**：
+- ✅ **聚焦 SDK 自身**：helpers 分层、framework 层设计
+- ✅ **引用平台架构**：WES 7 层架构指向主仓库文档
+- ✅ **模块组织**：模块组织方式、依赖关系说明
+- ✅ **设计决策**：设计决策记录
+
+**目标受众**：
+- 架构师（主要）
+- 贡献者（了解代码结构）
+
+**与其他文档的关系**：
+- 引用平台架构文档作为系统级架构
+- 被 `APPLICATION_SCENARIOS_ANALYSIS.md` 引用
+- 被 `ARCHITECTURE_PLAN.md` 引用
+
+---
+
+### 7. 应用场景分析（`docs/APPLICATION_SCENARIOS_ANALYSIS.md`）
+
+**定位**：SDK 职责边界分析
+
+**职责**：
+- ✅ **聚焦 SDK 职责**：在某场景中，Go SDK 负责哪一段？
+- ✅ **引用平台场景**：详细业务流图、跨子系统交互指向主仓库文档
+- ✅ **职责划分**：SDK 与 Client SDK、Workbench、节点的职责划分
+
+**目标受众**：
+- 架构师（主要）
+- 产品负责人（了解职责边界）
+
+**与其他文档的关系**：
+- 引用主仓库场景文档作为完整业务流
+- 引用 `SDK_ARCHITECTURE.md` 作为架构说明
+- 引用 `SCENARIOS_VISUAL_GUIDE.md` 作为可视化参考
+
+---
+
+### 8. ISPC 创新分析（`docs/ISPC_INNOVATION_ANALYSIS.md`）
+
+**定位**：Go SDK 如何使用 ISPC
+
+**职责**：
+- ✅ **聚焦 SDK 集成**：对 Go 合约开发者，ISPC 带来哪些能力
+- ✅ **引用平台文档**：ISPC 核心范式、受控外部交互机制指向主仓库文档
+- ✅ **能力映射**：这些能力在 Go SDK 中分别由哪些 helpers / framework API 暴露
+- ✅ **开发模式**：典型"外部调用 + ZK / 证明"的开发模式
+
+**目标受众**：
+- 架构师（主要）
+- 高级开发者（了解 ISPC 能力）
+
+**与其他文档的关系**：
+- 引用主仓库 ISPC 文档作为核心范式说明
+- 引用 `API_REFERENCE.md` 作为 API 说明
+- 引用 `DEVELOPER_GUIDE.md` 作为开发模式
+
+---
+
+### 9. WES Error Spec 实施（`docs/WES_ERROR_SPEC_IMPLEMENTATION.md`）
+
+**定位**：Go SDK 如何对接错误规范
+
+**职责**：
+- ✅ **错误码映射**：Host 层问题映射到 Go 侧错误码
+- ✅ **错误处理模式**：开发者在合约里应该如何处理/返回错误
+- ✅ **引用平台文档**：WES Error Specification 指向主仓库文档
+
+**目标受众**：
+- 合约开发者（主要）
+- 架构师（了解错误处理设计）
+
+**与其他文档的关系**：
+- 引用主仓库错误规范文档作为规范定义
+- 被 `DEVELOPER_GUIDE.md` 引用
+- 被 `API_REFERENCE.md` 引用
+
+---
+
+### 10. 语言与 WASM 限制（`docs/LANGUAGE_AND_WASM_LIMITATIONS.md`）
+
+**定位**：Go/TinyGo 特有的限制和注意事项
+
+**职责**：
+- ✅ **TinyGo 支持矩阵**：支持的标准库和特性
+- ✅ **Unsafe 指针注意事项**：WASM 环境下的特殊用法
+- ✅ **WASM 环境限制**：禁止使用的标准库和特性
+- ✅ **编译限制**：编译参数和优化建议
+
+**目标受众**：
+- 合约开发者（主要）
+- 架构师（了解技术限制）
+
+**与其他文档的关系**：
+- 被 `DEVELOPER_GUIDE.md` 引用
+- 被 `API_REFERENCE.md` 引用（在 API 说明中提及限制）
+
+---
+
 ## 🔄 文档配合关系
 
 ### 文档层次关系
@@ -129,7 +293,7 @@ contract-sdk-go/
   └─> Hello World 示例（完成第一个合约）
       └─> docs/README.md（文档中心）
           └─> DEVELOPER_GUIDE.md（深入学习）
-              └─> examples/README.md（参考示例）
+              └─> templates/README.md（参考示例）
 ```
 
 **开发路径**：
@@ -138,14 +302,14 @@ contract-sdk-go/
   └─> docs/README.md（文档中心）
       └─> API_REFERENCE.md（查阅 API）
           └─> helpers/README.md（模块文档）
-              └─> examples/README.md（参考示例）
+              └─> templates/README.md（参考示例）
 ```
 
 **架构路径**：
 ```
 主 README.md（了解架构概览）
   └─> docs/README.md（文档中心）
-      └─> STRUCTURE_DESIGN.md（架构设计）
+      └─> SDK_ARCHITECTURE.md（架构设计）
           └─> APPLICATION_SCENARIOS_ANALYSIS.md（场景分析）
 ```
 
@@ -155,10 +319,12 @@ contract-sdk-go/
 
 | 文档 | 建议长度 | 说明 |
 |------|---------|------|
-| 主 README.md | ≤ 300 行 | 保持简洁，突出核心价值 |
-| docs/README.md | ≤ 300 行 | 导航文档，保持清晰 |
-| DEVELOPER_GUIDE.md | 500-1000 行 | 完整教程，可适当详细 |
+| 主 README.md | ≤ 500 行 | 保持简洁，突出核心价值 |
+| docs/README.md | ≤ 500 行 | 导航文档，保持清晰 |
+| DEVELOPER_GUIDE.md | 800-1500 行 | 完整教程，可适当详细 |
 | API_REFERENCE.md | 1000+ 行 | 技术文档，需要详细 |
+| BUSINESS_SCENARIOS.md | 1000+ 行 | 场景文档，需要详细 |
+| SDK_ARCHITECTURE.md | 500-1000 行 | 架构文档，适中长度 |
 | 模块文档 | 200-500 行 | 模块说明，适中长度 |
 
 ---
@@ -171,9 +337,8 @@ contract-sdk-go/
 - [x] 30秒上手部分完整且可运行
 - [x] 核心能力展示清晰
 - [x] 文档导航按角色组织
-- [x] 长度控制在 300 行以内
+- [x] 长度控制在 500 行以内
 - [x] 视觉友好（使用 emoji、表格、代码块）
-- [x] 参考 WES 主 README 的风格
 
 ### docs/README.md
 
@@ -273,33 +438,6 @@ contract-sdk-go/
 
 ---
 
-## 🎯 与 WES 主 README 的对比
-
-### WES 主 README 的特点
-
-- ✅ **时代命题**：从宏观角度阐述问题
-- ✅ **核心突破**：突出技术创新的价值
-- ✅ **30秒上手**：快速体验核心功能
-- ✅ **技术架构**：简洁的技术说明
-- ✅ **文档导航**：按角色组织
-
-### Contract SDK 主 README 的特点
-
-- ✅ **价值主张**：为什么选择这个 SDK
-- ✅ **30秒上手**：快速开始开发合约
-- ✅ **核心能力**：业务语义接口、ISPC 创新、企业级能力
-- ✅ **架构概览**：分层架构说明
-- ✅ **文档导航**：指向文档中心
-
-### 共同点
-
-- ✅ 醒目的标题和标语
-- ✅ 30秒上手部分
-- ✅ 核心能力展示
-- ✅ 清晰的文档导航
-- ✅ 视觉友好的格式
-
----
-
 **最后更新**: 2025-01-23  
 **维护者**: WES Core Team
+
