@@ -457,5 +457,3 @@ Made with ❤️ by the WES Team
 </div>
 
 ---
-
-**最后更新**: 2025-01-23
