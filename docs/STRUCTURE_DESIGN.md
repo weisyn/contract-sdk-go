@@ -11,6 +11,8 @@
 
 ## 🎯 当前整体结构
 
+### 目录结构
+
 ```
 contract-sdk-go/
 ├── framework/          # Framework层：HostABI封装
@@ -26,6 +28,32 @@ contract-sdk-go/
 ├── examples/          # 示例代码
 ├── docs/             # 文档（讨论文档应在此）
 └── README.md         # 主README
+```
+
+### 架构层次图
+
+```mermaid
+graph TB
+    subgraph SDK["Contract SDK"]
+        HELPERS["Helpers 层<br/>业务语义封装"]
+        FRAMEWORK["Framework 层<br/>HostABI 封装"]
+        INTERNAL["Internal 层<br/>交易构建等"]
+    end
+    
+    subgraph WES["WES 协议层"]
+        HOSTABI["HostABI 原语<br/>17个原语"]
+        ISPC["ISPC 执行范式"]
+    end
+    
+    HELPERS --> FRAMEWORK
+    FRAMEWORK --> INTERNAL
+    INTERNAL --> HOSTABI
+    HOSTABI --> ISPC
+    
+    style HELPERS fill:#4CAF50,color:#fff
+    style FRAMEWORK fill:#2196F3,color:#fff
+    style INTERNAL fill:#9E9E9E,color:#fff
+    style HOSTABI fill:#9C27B0,color:#fff
 ```
 
 ---
@@ -110,15 +138,26 @@ contract-sdk-go/
    - Helpers层使用Framework能力，按照ISPC的思路组织业务逻辑
 
 2. **清晰的层次关系**
-   ```
-   HostABI原语（ISPC提供）
-        ↓
-   framework/  → HostABI封装（包括受控外部交互）
-        ↓
-   helpers/    → 业务语义封装（使用framework，按照ISPC思路组织）
-        ↓
-   examples/   → 示例代码（使用helpers）
-   ```
+
+```mermaid
+graph TB
+    ISPC["ISPC 执行范式<br/>（底层能力）"]
+    HOSTABI["HostABI 原语<br/>17个原语"]
+    FRAMEWORK["Framework 层<br/>HostABI 封装"]
+    HELPERS["Helpers 层<br/>业务语义封装"]
+    EXAMPLES["Examples<br/>示例代码"]
+    
+    ISPC --> HOSTABI
+    HOSTABI --> FRAMEWORK
+    FRAMEWORK --> HELPERS
+    HELPERS --> EXAMPLES
+    
+    style ISPC fill:#9C27B0,color:#fff
+    style HOSTABI fill:#7B1FA2,color:#fff
+    style FRAMEWORK fill:#2196F3,color:#fff
+    style HELPERS fill:#4CAF50,color:#fff
+    style EXAMPLES fill:#E3F2FD
+```
 
 3. **external的本质**
    - `helpers/external/` 是对Framework层HostABI封装的**业务语义封装**

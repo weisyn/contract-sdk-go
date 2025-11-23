@@ -27,6 +27,29 @@
 - 用户无需手动签名
 - 自动完成整个流程
 
+### 业务流程图
+
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant Contract as 合约
+    participant SDK as SDK Helpers
+    participant Chain as WES 链
+    
+    User->>Contract: 创建订单 (CreateOrder)
+    Contract->>Contract: 验证参数
+    Contract->>SDK: token.Transfer(买家→卖家)
+    SDK->>Chain: 自动构建交易
+    Chain-->>SDK: 交易成功
+    SDK-->>Contract: 返回成功
+    Contract->>Contract: 扣减库存
+    Contract->>Contract: 确认订单
+    Contract->>Chain: 发出事件 (OrderCreated)
+    Contract-->>User: 返回订单确认
+    
+    Note over User,Chain: ✅ 业务流连续，原子性保证
+```
+
 ### 实现方案
 
 **使用 SDK 提供的便捷操作**：
@@ -167,6 +190,29 @@ func ReleaseOrder() uint32 {
 - 业务流连续，不中断
 - 自动完成整个流程
 
+### 业务流程图
+
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant Contract as 合约
+    participant SDK as SDK Helpers
+    participant Chain as WES 链
+    
+    User->>Contract: 创建工单 (CreateWorkOrder)
+    Contract->>Contract: 创建工单记录
+    Contract->>Contract: 生产排程
+    Contract->>Contract: 质检确认
+    Contract->>SDK: rwa.ValidateAndTokenize()
+    SDK->>Chain: 验证资产并代币化
+    Chain-->>SDK: 代币化成功
+    SDK-->>Contract: 返回 TokenID
+    Contract->>Chain: 发出事件 (WorkOrderCompleted)
+    Contract-->>User: 返回工单完成
+    
+    Note over User,Chain: ✅ 原子性长事务，业务流连续
+```
+
 ### 实现方案
 
 ```go
@@ -230,6 +276,36 @@ func CreateWorkOrder() uint32 {
 ---
 
 ## 📊 SDK 提供的便捷操作
+
+### SDK 模块概览
+
+```mermaid
+graph LR
+    subgraph HELPERS["Helpers 业务语义层"]
+        TOKEN["Token<br/>转账·铸造·销毁"]
+        STAKING["Staking<br/>质押·委托"]
+        MARKET["Market<br/>托管·释放"]
+        GOV["Governance<br/>提案·投票"]
+        RWA["RWA<br/>资产代币化"]
+        EXTERNAL["External<br/>外部API调用"]
+    end
+    
+    subgraph USAGE["使用场景"]
+        ECOMMERCE["电商<br/>订单·支付"]
+        MANUFACTURE["制造业<br/>工单·生产"]
+        DEFI["DeFi<br/>质押·治理"]
+    end
+    
+    ECOMMERCE --> TOKEN
+    ECOMMERCE --> MARKET
+    MANUFACTURE --> RWA
+    MANUFACTURE --> EXTERNAL
+    DEFI --> STAKING
+    DEFI --> GOV
+    
+    style HELPERS fill:#4CAF50,color:#fff
+    style USAGE fill:#E3F2FD
+```
 
 ### Token 模块
 

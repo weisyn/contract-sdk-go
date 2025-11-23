@@ -8,6 +8,23 @@
 
 ## 🚀 快速开始
 
+### 开发流程概览
+
+```mermaid
+graph LR
+    A[安装依赖<br/>TinyGo] --> B[创建项目<br/>go mod init]
+    B --> C[编写合约<br/>使用 helpers API]
+    C --> D[编译WASM<br/>tinygo build]
+    D --> E[部署合约<br/>wes deploy]
+    E --> F[调用合约<br/>wes call]
+    F --> G[查看结果<br/>事件/日志]
+    
+    style A fill:#E3F2FD
+    style C fill:#C8E6C9
+    style D fill:#FFF9C4
+    style E fill:#F3E5F5
+```
+
 ### 1. 安装依赖
 
 ```bash
@@ -103,6 +120,44 @@ wes contract deploy --wasm contract.wasm
 
 ## 📚 核心概念
 
+### SDK 分层架构
+
+合约开发者只需关注业务语义层，SDK 自动处理底层细节：
+
+```mermaid
+graph TB
+    subgraph DEV["👨‍💻 合约开发者"]
+        CODE["合约代码<br/>使用 helpers API"]
+    end
+    
+    subgraph HELPERS["业务语义层 (helpers/)"]
+        TOKEN["Token<br/>转账·铸造"]
+        STAKING["Staking<br/>质押·委托"]
+        GOV["Governance<br/>提案·投票"]
+        MARKET["Market<br/>托管·释放"]
+    end
+    
+    subgraph FRAMEWORK["框架层 (framework/)"]
+        HOSTABI["HostABI 封装"]
+        TX_BUILDER["交易构建器"]
+        STORAGE["状态管理"]
+    end
+    
+    subgraph WES["WES 协议层"]
+        EUTXO["EUTXO 模型"]
+        ISPC["ISPC 执行"]
+    end
+    
+    DEV --> HELPERS
+    HELPERS --> FRAMEWORK
+    FRAMEWORK --> WES
+    
+    style DEV fill:#E3F2FD
+    style HELPERS fill:#4CAF50,color:#fff
+    style FRAMEWORK fill:#2196F3,color:#fff
+    style WES fill:#9C27B0,color:#fff
+```
+
 ### 1. 业务语义优先
 
 **推荐使用 Helpers 层的业务语义接口**：
@@ -127,14 +182,58 @@ err := staking.Stake(staker, validator, tokenID, amount)
 
 所有交易构建都是确定性的：
 
+```mermaid
+graph LR
+    A[合约执行] --> B{确定性检查}
+    B -->|✅ 通过| C[生成交易]
+    B -->|❌ 失败| D[拒绝执行]
+    
+    C --> E[相同输入<br/>相同输出]
+    E --> F[相同 TxID]
+    
+    G[禁用项] --> H[系统时间]
+    G --> I[随机数]
+    G --> J[外部IO]
+    G --> K[网络访问]
+    
+    style B fill:#FFF9C4
+    style E fill:#C8E6C9
+    style G fill:#FFCDD2
+```
+
+**确定性要求**：
 - ✅ 禁用系统时间
 - ✅ 禁用随机数
 - ✅ 禁用外部IO
 - ✅ 禁用网络访问
 
-**验证**：100次重复执行产生相同TxID
+**验证方法**：100次重复执行产生相同TxID
 
 ### 3. 错误处理
+
+合约执行流程中的错误处理：
+
+```mermaid
+graph TD
+    A[合约函数调用] --> B[参数验证]
+    B -->|失败| C[返回 ERROR_INVALID_PARAMS]
+    B -->|成功| D[执行业务逻辑]
+    D --> E{使用 Helpers API}
+    E -->|转账| F[token.Transfer]
+    E -->|质押| G[staking.Stake]
+    F --> H{执行结果}
+    G --> H
+    H -->|成功| I[返回 SUCCESS]
+    H -->|余额不足| J[返回 ERROR_INSUFFICIENT_BALANCE]
+    H -->|其他错误| K[返回 ERROR_EXECUTION_FAILED]
+    
+    style C fill:#FFCDD2
+    style J fill:#FFCDD2
+    style K fill:#FFCDD2
+    style I fill:#C8E6C9
+```
+
+**错误处理示例**：
 
 ```go
 success, txHash, errCode := builder.Finalize()
@@ -155,6 +254,34 @@ if !success {
 ---
 
 ## 🎯 常见场景
+
+### 场景流程图
+
+```mermaid
+graph TB
+    subgraph SCENARIOS["常见业务场景"]
+        S1[简单转账<br/>token.Transfer]
+        S2[批量转账<br/>循环调用 Transfer]
+        S3[质押操作<br/>staking.Stake]
+        S4[余额查询<br/>QueryUTXOBalance]
+    end
+    
+    subgraph HELPERS["Helpers API"]
+        TOKEN_API["Token API"]
+        STAKING_API["Staking API"]
+        FRAMEWORK_API["Framework API"]
+    end
+    
+    S1 --> TOKEN_API
+    S2 --> TOKEN_API
+    S3 --> STAKING_API
+    S4 --> FRAMEWORK_API
+    
+    style S1 fill:#E3F2FD
+    style S2 fill:#E3F2FD
+    style S3 fill:#E3F2FD
+    style S4 fill:#E3F2FD
+```
 
 ### 场景1：简单转账
 

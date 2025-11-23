@@ -10,6 +10,42 @@
 
 > **⚠️ 重要提示**: Framework 层是 SDK 的内部实现层，合约开发者**应优先使用 Helpers 层的业务语义接口**。Framework 层主要用于环境查询、事件发出等基础能力。
 
+### API 分层架构
+
+```mermaid
+graph TB
+    subgraph CONTRACT["合约代码"]
+        CALL["合约函数调用"]
+    end
+    
+    subgraph HELPERS["Helpers 层 (推荐)"]
+        TOKEN_API["token.Transfer()"]
+        STAKING_API["staking.Stake()"]
+        MARKET_API["market.Escrow()"]
+    end
+    
+    subgraph FRAMEWORK["Framework 层"]
+        ENV_API["环境查询<br/>GetCaller()"]
+        EVENT_API["事件发出<br/>EmitEvent()"]
+        PARAM_API["参数解析<br/>GetContractParams()"]
+    end
+    
+    subgraph INTERNAL["内部实现层"]
+        TX_BUILDER["交易构建器<br/>(内部使用)"]
+        HOSTABI["HostABI 封装<br/>(内部使用)"]
+    end
+    
+    CALL --> HELPERS
+    CALL --> FRAMEWORK
+    HELPERS --> INTERNAL
+    FRAMEWORK --> INTERNAL
+    
+    style CONTRACT fill:#E3F2FD
+    style HELPERS fill:#4CAF50,color:#fff
+    style FRAMEWORK fill:#2196F3,color:#fff
+    style INTERNAL fill:#9E9E9E,color:#fff
+```
+
 ### 推荐方式：使用 Helpers 层
 
 ```go
@@ -45,6 +81,39 @@ Framework 层主要用于：
 - 环境查询（GetCaller、GetBlockHeight 等）
 - 事件和日志（EmitEvent、LogDebug）
 - 参数解析（GetContractParams）
+
+### API 调用流程
+
+```mermaid
+sequenceDiagram
+    participant Contract as 合约函数
+    participant Helpers as Helpers API
+    participant Framework as Framework API
+    participant HostABI as HostABI
+    participant Chain as WES 链
+    
+    Contract->>Framework: GetContractParams()
+    Framework-->>Contract: 返回参数
+    
+    Contract->>Framework: GetCaller()
+    Framework->>HostABI: host_get_caller()
+    HostABI-->>Framework: 返回调用者地址
+    Framework-->>Contract: 返回 Address
+    
+    Contract->>Helpers: token.Transfer(...)
+    Helpers->>Framework: 构建交易
+    Framework->>HostABI: host_create_utxo_output()
+    HostABI->>Chain: 执行交易
+    Chain-->>HostABI: 交易成功
+    HostABI-->>Framework: 返回结果
+    Framework-->>Helpers: 返回成功
+    Helpers-->>Contract: 返回 nil
+    
+    Contract->>Framework: EmitEvent(...)
+    Framework->>HostABI: host_emit_event()
+    HostABI-->>Framework: 事件已发出
+    Framework-->>Contract: 返回成功
+```
 
 ---
 

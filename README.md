@@ -1,17 +1,27 @@
-# WES 智能合约 Go SDK
+# WES Smart Contract SDK for Go
 
 <div align="center">
 
 <pre>
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║   WES Contract SDK Go                                     ║
-║   让智能合约开发回归业务本质                                  ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
+__          ________ _____  _______     ___   _ 
+\ \        / /  ____|_   _|/ ____\ \   / / \ | |
+ \ \  /\  / /| |__    | | | (___  \ \_/ /|  \| |
+  \ \/  \/ / |  __|   | |  \___ \  \   / | . ` |
+   \  /\  /  | |____ _| |_ ____) |  | |  | |\  |
+    \/  \/   |______|_____|_____/   |_|  |_| \_|
 </pre>
 
-**业务语义优先 • 零外部依赖 • WASM 优化 • 企业级能力**
+**WES 区块链智能合约开发工具包 - Go 语言版本**  
+**为智能合约开发者提供业务语义优先的合约开发能力**
+
+[![Go Version](https://img.shields.io/badge/go-1.24+-blue.svg)](https://golang.org)
+[![TinyGo](https://img.shields.io/badge/TinyGo-0.31+-blue.svg)](https://tinygo.org/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/weisyn/contract-sdk-go)](https://goreportcard.com/report/github.com/weisyn/contract-sdk-go)
+
+[🚀 快速开始](#-30秒上手) • [📚 文档中心](./docs/README.md) • [💡 核心能力](#-核心能力) • [🏗️ 架构概览](#️-sdk-架构)
+
+</div>
 
 📖 **[English](README_EN.md) | 中文**
 
@@ -195,36 +205,115 @@ data, err := external.CallAPI(
 
 ---
 
-## 🏗️ SDK 架构
+## 🏗️ 架构概览
+
+> 📖 **完整架构文档**：详见 [架构设计文档](./docs/STRUCTURE_DESIGN.md) | [架构规划文档](./docs/ARCHITECTURE_PLAN.md)
+
+### 在 WES 7 层架构中的位置
+
+`contract-sdk-go` 位于 WES 系统的**应用层 & 开发者生态**中的 **SDK 工具链**，用于开发运行在 **ISPC 执行层**的智能合约：
+
+```mermaid
+graph TB
+    subgraph DEV_ECOSYSTEM["🎨 应用层 & 开发者生态"]
+        direction TB
+        subgraph SDK_LAYER["SDK 工具链"]
+            direction LR
+            CLIENT_SDK["Client SDK<br/>Go/JS/Python/Java<br/>📱 DApp·钱包·浏览器<br/>链外应用开发"]
+            CONTRACT_SDK["Contract SDK (WASM)<br/>Go/TinyGo<br/>📜 智能合约开发<br/>⭐ contract-sdk-go<br/>链上合约开发"]
+            AI_SDK["AI SDK (ONNX)"]
+        end
+        subgraph END_USER_APPS["终端应用"]
+            direction LR
+            WALLET_APP["Wallet<br/>钱包应用"]
+            EXPLORER["Explorer<br/>区块浏览器"]
+            DAPP["DApp<br/>去中心化应用"]
+        end
+    end
+    
+    subgraph API_GATEWAY["🌐 API 网关层"]
+        direction LR
+        JSONRPC["JSON-RPC 2.0<br/>:8545"]
+        HTTP["HTTP REST<br/>/api/v1/*"]
+    end
+    
+    subgraph ISPC_LAYER["🔮 ISPC 执行层"]
+        direction LR
+        WASM_ENGINE["WASM 引擎<br/>合约执行环境"]
+        HOSTABI["HostABI<br/>17个原语"]
+    end
+    
+    subgraph BIZ_LAYER["💼 业务服务层"]
+        APP_SVC["App Service<br/>应用编排·生命周期"]
+    end
+    
+    WALLET_APP --> CLIENT_SDK
+    EXPLORER --> CLIENT_SDK
+    DAPP --> CLIENT_SDK
+    
+    CLIENT_SDK --> JSONRPC
+    CLIENT_SDK --> HTTP
+    
+    JSONRPC --> APP_SVC
+    HTTP --> APP_SVC
+    
+    CONTRACT_SDK -.编译为WASM.-> WASM_ENGINE
+    WASM_ENGINE --> HOSTABI
+    HOSTABI --> APP_SVC
+    
+    style CONTRACT_SDK fill:#81C784,color:#fff,stroke:#4CAF50,stroke-width:3px
+    style ISPC_LAYER fill:#9C27B0,color:#fff
+    style API_GATEWAY fill:#64B5F6,color:#fff
+    style BIZ_LAYER fill:#FFB74D,color:#333
+```
+
+> 📖 **完整 WES 架构**：详见 [WES 系统架构文档](https://github.com/weisyn/go-weisyn/blob/main/docs/system/architecture/1-STRUCTURE_VIEW.md#-系统分层架构)  
+> 📱 **Client SDK**：用于链外应用开发，详见 [Client SDK (Go)](https://github.com/weisyn/client-sdk-go)
+
+### SDK 内部分层架构
 
 SDK 采用分层架构，**合约开发者只需使用业务语义层**：
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│  业务语义层（合约开发者使用）                                │
-│  helpers/                                               │
-│  ├─ token.Transfer()      → 转账                         │
-│  ├─ token.Mint()          → 铸造                         │
-│  ├─ staking.Stake()       → 质押                         │
-│  ├─ governance.Vote()     → 投票                         │
-│  ├─ rwa.ValidateAndTokenize() → 资产代币化                │
-│  └─ external.CallAPI()    → 外部API调用                  │
-└─────────────────────────────────────────────────────────┘
-         ↓ 内部实现（SDK 自动处理）
-┌─────────────────────────────────────────────────────────┐
-│  框架层（SDK 内部使用）                                    │
-│  framework/                                             │
-│  ├─ HostABI 封装                                        │
-│  ├─ 交易构建                                             │
-│  └─ 状态管理                                             │
-└─────────────────────────────────────────────────────────┘
-         ↓ 调用
-┌─────────────────────────────────────────────────────────┐
-│  WES 协议层（底层能力）                                    │
-│  - EUTXO 交易模型                                        │
-│  - 可验证计算（ISPC）                                     │
-│  - 统一资源管理（URES）                                   │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph CONTRACT_DEV["👨‍💻 合约开发者"]
+        direction LR
+        CONTRACT_CODE["合约代码<br/>使用 helpers API"]
+    end
+    
+    subgraph HELPERS_LAYER["业务语义层 (helpers/)"]
+        direction LR
+        TOKEN["Token<br/>转账·铸造·销毁"]
+        STAKING["Staking<br/>质押·委托"]
+        GOVERNANCE["Governance<br/>提案·投票"]
+        MARKET["Market<br/>托管·释放"]
+        RWA["RWA<br/>资产代币化"]
+        EXTERNAL["External<br/>外部API调用"]
+    end
+    
+    subgraph FRAMEWORK_LAYER["框架层 (framework/)"]
+        direction TB
+        HOSTABI_WRAP["HostABI 封装<br/>17个原语"]
+        TX_BUILDER["交易构建器<br/>TransactionBuilder"]
+        STORAGE["状态管理<br/>Storage"]
+        CONTEXT["上下文<br/>Context"]
+    end
+    
+    subgraph WES_PROTOCOL["WES 协议层"]
+        direction TB
+        EUTXO["EUTXO 交易模型"]
+        ISPC["可验证计算 (ISPC)"]
+        URES["统一资源管理 (URES)"]
+    end
+    
+    CONTRACT_DEV --> HELPERS_LAYER
+    HELPERS_LAYER --> FRAMEWORK_LAYER
+    FRAMEWORK_LAYER --> WES_PROTOCOL
+    
+    style CONTRACT_DEV fill:#E3F2FD
+    style HELPERS_LAYER fill:#4CAF50,color:#fff
+    style FRAMEWORK_LAYER fill:#2196F3,color:#fff
+    style WES_PROTOCOL fill:#9C27B0,color:#fff
 ```
 
 **关键原则**：
