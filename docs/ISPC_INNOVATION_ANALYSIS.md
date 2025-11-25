@@ -1,7 +1,11 @@
 # ISPC 创新分析 - Go SDK 视角
 
 **版本**: v1.0.0  
+<<<<<<< Updated upstream
 **最后更新**: 2025-01-23
+=======
+**最后更新**: 2025-11-23
+>>>>>>> Stashed changes
 
 ---
 
@@ -133,6 +137,10 @@ func ProcessExternalData() uint32 {
 
 ---
 
+<<<<<<< Updated upstream
 **最后更新**: 2025-01-23  
+=======
+**最后更新**: 2025-11-23  
+>>>>>>> Stashed changes
 **维护者**: WES Core Team
 

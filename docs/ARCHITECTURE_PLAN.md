@@ -1,7 +1,11 @@
 # Contract SDK Go - 架构规划
 
 **版本**: v1.0.0  
+<<<<<<< Updated upstream
 **最后更新**: 2025-01-23
+=======
+**最后更新**: 2025-11-23
+>>>>>>> Stashed changes
 
 ---
 
@@ -92,6 +96,10 @@
 
 ---
 
+<<<<<<< Updated upstream
 **最后更新**: 2025-01-23  
+=======
+**最后更新**: 2025-11-23  
+>>>>>>> Stashed changes
 **维护者**: WES Core Team
 

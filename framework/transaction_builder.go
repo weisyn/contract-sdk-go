@@ -406,9 +406,10 @@ func (tb *TransactionBuilder) serializeDraft() string {
 			json += `,"resource":"` + base64EncodeSimple(out.resource) + `"`
 
 		case "state":
+			// 遵循 WES ABI 规范：weisyn.git/docs/components/core/ispc/abi-and-payload.md
 			json += `,"state_id":"` + base64EncodeSimple(out.stateID) + `"`
-			json += `,"version":` + Uint64ToString(out.stateVer)
-			json += `,"exec_hash":"` + base64EncodeSimple(out.execHash) + `"`
+			json += `,"state_version":` + Uint64ToString(out.stateVer)
+			json += `,"execution_result_hash":"` + base64EncodeSimple(out.execHash) + `"`
 		}
 
 		json += "}"
