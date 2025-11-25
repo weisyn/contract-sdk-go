@@ -1,467 +1,268 @@
-# WES 合约开发指南
+# WES 合约开发指南 - Go SDK 视角
 
 **版本**: v1.0.0  
-**状态**: ✅ 稳定  
-**最后更新**: 2025-11-11
+**最后更新**: 2025-01-23
+
+---
+
+## 📋 文档定位
+
+> 📌 **重要说明**：本文档聚焦 **Go SDK 视角**的合约开发指南。  
+> 如需了解 WES 平台的核心概念、架构设计、ISPC 原理等，请参考主仓库文档。
+
+**本文档目标**：
+- 说明如何使用 Go SDK 开发 WES 智能合约
+- 讲解常见开发模式（参数解析、错误处理、事件、调用外部 API 等）
+- 提供从模板到部署的完整开发流程
+- **引用平台文档**：平台概念（UTXO、ISPC 原理等）请参考主仓库文档
+
+**前置阅读**（平台级文档，来自主仓库）：
+- [智能合约平台文档](../../../weisyn.git/docs/system/platforms/contracts/README.md) - 智能合约平台总览
+- [合约核心概念](../../../weisyn.git/docs/tutorials/contracts/CONCEPTS.md) - 核心概念解释
+- [合约学习路径](../../../weisyn.git/docs/tutorials/contracts/LEARNING_PATH.md) - 分阶段学习路径
 
 ---
 
 ## 🚀 快速开始
 
-### 1. 安装依赖
+### 前置要求
+
+- **Go 1.24+** - 用于开发环境编译
+- **TinyGo 0.31+** - 用于编译为 WASM
 
 ```bash
-# 安装TinyGo
+# macOS
 brew install tinygo
 
-# 验证安装
-tinygo version
+# Linux/其他
+# 见 https://tinygo.org/getting-started/install/
 ```
 
-### 2. 创建新合约
+### 安装 SDK
 
 ```bash
-# 创建项目目录
-mkdir my-contract
-cd my-contract
-
-# 初始化go模块
-go mod init my-contract
-go mod edit -replace github.com/weisyn/contract-sdk-go=../contract-sdk-go
+go get github.com/weisyn/contract-sdk-go@v1.0.0
 ```
 
-### 3. 编写合约
+### 第一个合约
 
-创建`main.go`：
+创建 `hello.go`:
 
 ```go
 package main
 
 import (
-    "github.com/weisyn/contract-sdk-go/helpers/token"
     "github.com/weisyn/contract-sdk-go/framework"
 )
 
-//export Initialize
-func Initialize() uint32 {
-    // 初始化逻辑
-    return framework.SUCCESS
-}
-
-//export Transfer
-func Transfer() uint32 {
-    // 获取参数
-    params := framework.GetContractParams()
-    toStr := params.ParseJSON("to")
-    amount := params.ParseJSONInt("amount")
-    
-    // 解析地址
-    to, err := framework.ParseAddressBase58(toStr)
-    if err != nil {
-        return framework.ERROR_INVALID_PARAMS
-    }
-    
-    // 使用业务语义接口进行转账
+//export SayHello
+func SayHello() uint32 {
+    // 获取调用者地址
     caller := framework.GetCaller()
-    err = token.Transfer(caller, to, nil, framework.Amount(amount))
-    if err != nil {
-        return framework.ERROR_EXECUTION_FAILED
-    }
     
     // 发出事件
-    event := framework.NewEvent("Transfer")
-    event.AddAddressField("from", caller)
-    event.AddAddressField("to", to)
-    event.AddUint64Field("amount", amount)
-    framework.EmitEvent(event)
+    message := "Hello, " + string(caller)
+    framework.EmitEvent("Greeting", []byte(message))
     
+    // 返回成功
+    framework.SetReturnData([]byte(message))
     return framework.SUCCESS
 }
-
-func main() {}
 ```
 
-### 4. 编译合约
+编译为 WASM：
 
 ```bash
-tinygo build -o contract.wasm \
-    -target=wasi \
-    -scheduler=none \
-    -no-debug \
-    -opt=2 \
-    main.go
-```
-
-### 5. 部署合约
-
-```bash
-# 使用WES CLI部署
-wes contract deploy --wasm contract.wasm
+tinygo build -o main.wasm -target wasm -no-debug hello.go
 ```
 
 ---
 
 ## 📚 核心概念
 
-### 1. 业务语义优先
+### 合约生命周期
 
-**推荐使用 Helpers 层的业务语义接口**：
-
-```go
-import "github.com/weisyn/contract-sdk-go/helpers/token"
-import "github.com/weisyn/contract-sdk-go/helpers/staking"
-
-// 转账
-err := token.Transfer(from, to, tokenID, amount)
-
-// 质押
-err := staking.Stake(staker, validator, tokenID, amount)
+```mermaid
+graph LR
+    A[合约部署] --> B[Init 初始化]
+    B --> C[Call 调用]
+    C --> D[View 查询]
+    C --> C
+    
+    style A fill:#E3F2FD
+    style B fill:#C8E6C9
+    style C fill:#FFF9C4
+    style D fill:#FFE0B2
 ```
 
-**优势**：
-- 代码更简洁直观
-- 自动处理余额检查、交易构建等
-- 类型安全
+- **Init**：合约初始化，设置初始状态
+- **Call**：合约调用，修改状态
+- **View**：合约查询，只读操作
 
-### 2. 确定性保证
+### SDK 分层架构
 
-所有交易构建都是确定性的：
-
-- ✅ 禁用系统时间
-- ✅ 禁用随机数
-- ✅ 禁用外部IO
-- ✅ 禁用网络访问
-
-**验证**：100次重复执行产生相同TxID
-
-### 3. 错误处理
-
-```go
-success, txHash, errCode := builder.Finalize()
-if !success {
-    // 错误处理
-    switch errCode {
-    case framework.ERROR_INSUFFICIENT_BALANCE:
-        // 余额不足
-    case framework.ERROR_INVALID_PARAMS:
-        // 参数无效
-    default:
-        // 其他错误
-    }
-    return errCode
-}
+```mermaid
+graph TB
+    A[合约代码] -->|使用| B[Helpers 业务语义层]
+    B -->|基于| C[Framework 框架层]
+    C -->|封装| D[HostABI 原语层]
+    D -->|调用| E[WES ISPC 引擎]
+    
+    style A fill:#FFD700,color:#000
+    style B fill:#4CAF50,color:#fff
+    style C fill:#2196F3,color:#fff
+    style D fill:#9C27B0,color:#fff
+    style E fill:#F44336,color:#fff
 ```
+
+- **Helpers 层**：业务语义接口（`token.Transfer()`, `staking.Stake()` 等）
+- **Framework 层**：HostABI 封装（环境查询、事件日志等）
+- **HostABI 层**：17 个最小原语（由 ISPC 提供）
 
 ---
 
-## 🎯 常见场景
+## 🎯 常见开发模式
 
-### 场景1：简单转账
+### 参数解析
 
 ```go
-import "github.com/weisyn/contract-sdk-go/helpers/token"
+import (
+    "github.com/weisyn/contract-sdk-go/framework"
+    "github.com/weisyn/contract-sdk-go/helpers/token"
+)
 
 //export Transfer
 func Transfer() uint32 {
-    params := framework.GetContractParams()
-    toStr := params.ParseJSON("to")
-    amount := params.ParseJSONInt("amount")
+    // 获取调用参数
+    params := framework.GetCallParams()
     
-    to, err := framework.ParseAddressBase58(toStr)
-    if err != nil {
-        return framework.ERROR_INVALID_PARAMS
-    }
+    // 解析参数（JSON 格式）
+    // 注意：SDK 内部实现了轻量级 JSON 解析器
+    // 仅支持基本字段提取
     
-    caller := framework.GetCaller()
-    err = token.Transfer(caller, to, nil, framework.Amount(amount))
-    if err != nil {
-        return framework.ERROR_EXECUTION_FAILED
-    }
-    
-    return framework.SUCCESS
+    // 使用 Helpers API（推荐）
+    // token.Transfer 内部已经处理了参数解析
+    return token.Transfer(params)
 }
 ```
 
-### 场景2：批量转账
+### 错误处理
 
 ```go
-import "github.com/weisyn/contract-sdk-go/helpers/token"
-
-//export BatchTransfer
-func BatchTransfer() uint32 {
-    params := framework.GetContractParams()
-    recipients := params.ParseJSONArray("recipients")
-    amounts := params.ParseJSONIntArray("amounts")
-    
-    caller := framework.GetCaller()
-    
-    for i, recipientStr := range recipients {
-        recipient, err := framework.ParseAddressBase58(recipientStr)
-        if err != nil {
-            return framework.ERROR_INVALID_PARAMS
-        }
-        
-        err = token.Transfer(caller, recipient, nil, framework.Amount(amounts[i]))
-        if err != nil {
-            return framework.ERROR_EXECUTION_FAILED
-        }
-    }
-    
-    return framework.SUCCESS
-}
-```
-
-### 场景3：质押
-
-```go
-import "github.com/weisyn/contract-sdk-go/helpers/staking"
-
-//export Stake
-func Stake() uint32 {
-    params := framework.GetContractParams()
-    validatorStr := params.ParseJSON("validator")
-    amount := params.ParseJSONInt("amount")
-    
-    validator, err := framework.ParseAddressBase58(validatorStr)
-    if err != nil {
-        return framework.ERROR_INVALID_PARAMS
-    }
-    
-    caller := framework.GetCaller()
-    err = staking.Stake(caller, validator, nil, framework.Amount(amount))
-    if err != nil {
-        return framework.ERROR_EXECUTION_FAILED
-    }
-    
-    return framework.SUCCESS
-}
-```
-
-### 场景4：查询余额
-
-```go
-//export GetBalance
-func GetBalance() uint32 {
-    params := framework.GetContractParams()
-    addrStr := params.ParseJSON("address")
-    
-    addr, err := framework.ParseAddressBase58(addrStr)
-    if err != nil {
-        return framework.ERROR_INVALID_PARAMS
-    }
-    
-    balance := framework.QueryUTXOBalance(addr, nil)
-    
-    // 返回JSON结果
-    result := map[string]interface{}{
-        "address": addrStr,
-        "balance": uint64(balance),
-    }
-    
-    framework.SetReturnJSON(result)
-    return framework.SUCCESS
-}
-```
-
----
-
-## 🔧 最佳实践
-
-### 1. 参数验证
-
-**始终验证输入参数**：
-
-```go
-// ✅ 推荐
-if addrStr == "" || amount == 0 {
-    return framework.ERROR_INVALID_PARAMS
-}
-
-addr, err := framework.ParseAddressBase58(addrStr)
-if err != nil {
-    return framework.ERROR_INVALID_PARAMS
-}
-
-// ❌ 不推荐
-addr, _ := framework.ParseAddressBase58(addrStr)
-```
-
-### 2. 事件记录
-
-**记录重要操作**：
-
-```go
-// ✅ 推荐
-event := framework.NewEvent("Transfer")
-event.AddAddressField("from", from)
-event.AddAddressField("to", to)
-event.AddUint64Field("amount", amount)
-event.AddStringField("tx_hash", string(txHash))
-framework.EmitEvent(event)
-
-// ❌ 不推荐
-// 不记录任何事件
-```
-
-### 3. 错误处理
-
-**详细的错误处理**：
-
-```go
-// ✅ 推荐
-success, txHash, errCode := builder.Finalize()
-if !success {
-    // 记录错误事件
-    event := framework.NewEvent("TransferFailed")
-    event.AddUint32Field("error_code", errCode)
-    framework.EmitEvent(event)
-    return errCode
-}
-
-// ❌ 不推荐
-builder.Finalize()
-return framework.SUCCESS
-```
-
-### 4. 批量操作
-
-**使用 Helpers 层进行批量操作**：
-
-```go
-// ✅ 推荐（使用 Helpers 层）
-import "github.com/weisyn/contract-sdk-go/helpers/token"
-
-for _, recipient := range recipients {
-    err := token.Transfer(caller, recipient, nil, amount)
-    if err != nil {
-        return framework.ERROR_EXECUTION_FAILED
-    }
-}
-```
-
----
-
-## 🧪 测试
-
-### 单元测试
-
-```go
-// contract_test.go
-package main
-
 import (
-    "testing"
+    "github.com/weisyn/contract-sdk-go/framework"
+    "github.com/weisyn/contract-sdk-go/helpers/token"
 )
 
-func TestTransfer(t *testing.T) {
-    // 测试逻辑
+//export Transfer
+func Transfer() uint32 {
+    // Helpers API 内部已经处理了错误码映射
+    // 返回标准错误码
+    errCode := token.Transfer(params)
+    if errCode != framework.SUCCESS {
+        return errCode
+    }
+    
+    return framework.SUCCESS
 }
 ```
 
-### 集成测试
+### 事件发出
 
-使用WES测试框架：
+```go
+import "github.com/weisyn/contract-sdk-go/framework"
+
+//export Transfer
+func Transfer() uint32 {
+    // 发出事件
+    framework.EmitEvent("Transfer", []byte("from:alice,to:bob,amount:100"))
+    
+    return framework.SUCCESS
+}
+```
+
+### 外部 API 调用
+
+```go
+import "github.com/weisyn/contract-sdk-go/helpers/external"
+
+//export CallExternalAPI
+func CallExternalAPI() uint32 {
+    // 调用外部 API（受控外部交互）
+    result, errCode := external.Call("https://api.example.com/data", nil)
+    if errCode != framework.SUCCESS {
+        return errCode
+    }
+    
+    // 处理结果
+    framework.SetReturnData(result)
+    return framework.SUCCESS
+}
+```
+
+---
+
+## 🏗️ 开发流程
+
+### 1. 选择模板
+
+参考 [合约模板](../templates/README.md) 选择合适的模板：
+- **学习模板**：hello-world、simple-token、basic-nft
+- **标准业务模板**：token、staking、governance、market、nft、rwa、defi
+
+### 2. 本地开发
 
 ```bash
-wes contract test --wasm contract.wasm
+# 克隆模板
+cp -r templates/learning/hello-world my-contract
+cd my-contract
+
+# 修改代码
+# ...
+
+# 编译
+./build.sh
 ```
 
-### 确定性测试
+### 3. 测试
 
-```go
-// 验证100次执行产生相同TxID
-for i := 0; i < 100; i++ {
-    success, txHash, _ := builder.Finalize()
-    if !success {
-        t.Fatal("build failed")
-    }
-    
-    if i > 0 && !bytes.Equal(txHash, firstTxHash) {
-        t.Fatal("TxID not deterministic")
-    }
-    
-    if i == 0 {
-        firstTxHash = txHash
-    }
-}
+```bash
+# 运行测试
+go test ./...
+
+# 或使用 Workbench 进行集成测试
+# 参考：主仓库集成测试指南
 ```
+
+### 4. 部署
+
+使用 Workbench 或 Client SDK 部署合约。
 
 ---
 
-## 📝 示例合约
+## 📖 进一步阅读
 
-查看完整示例：
+### 核心文档
 
-1. [ERC-20 代币合约](../examples/token/erc20-token/)
-2. [基础质押合约](../examples/staking/basic-staking/)
-3. [更多示例](../examples/README.md)
+- **[API 参考](./API_REFERENCE.md)** - 详细的 API 文档
+- **[业务场景实现指南](./BUSINESS_SCENARIOS.md)** - 如何实现业务场景
+- **[语言与 WASM 限制](./LANGUAGE_AND_WASM_LIMITATIONS.md)** - Go/TinyGo 限制和注意事项
+- **[WES Error Spec 实施](./WES_ERROR_SPEC_IMPLEMENTATION.md)** - 错误处理规范
 
----
+### 模块文档
 
-## 🆘 常见问题
+- **[Helpers 层文档](../helpers/README.md)** - 业务语义层详细说明
+- **[Framework 层文档](../framework/README.md)** - 框架层详细说明
+- **[合约模板](../templates/README.md)** - SDK 提供的合约开发模板
 
-### Q1: 如何调试合约？
+### 平台文档（主仓库）
 
-**A**: 使用日志和事件：
-
-```go
-// 发出调试事件
-event := framework.NewEvent("Debug")
-event.AddStringField("message", "debug info")
-framework.EmitEvent(event)
-```
-
-### Q2: 如何优化性能？
-
-**A**: 
-- 使用批量操作
-- 减少链上存储
-- 优化循环逻辑
-
-### Q3: 如何处理大数运算？
-
-**A**: 使用 Go 标准库或 SDK 提供的类型：
-
-```go
-// 使用 framework.Amount 类型（uint64）
-amount := framework.Amount(1000000)
-
-// 注意溢出检查
-if amount > math.MaxUint64 {
-    return framework.ERROR_EXECUTION_FAILED
-}
-```
-
-### Q4: 为什么不能使用 `encoding/json`？
-
-**A**: TinyGo WASM环境不支持标准库的`encoding/json`包。SDK提供了轻量级JSON解析工具：
-
-**使用SDK提供的JSON解析**：
-```go
-// ✅ 正确：使用SDK提供的JSON解析
-params := framework.GetContractParams()
-toStr := params.ParseJSON("to")
-amount := params.ParseJSONInt("amount")
-
-// ❌ 错误：不能使用标准库
-import "encoding/json"
-var data map[string]interface{}
-json.Unmarshal(jsonBytes, &data) // 编译失败
-```
-
-**SDK提供的JSON工具**：
-- `ContractParams.ParseJSON(key)` - 解析字符串字段
-- `ContractParams.ParseJSONInt(key)` - 解析整数字段
-- SDK内部实现了轻量级JSON解析器（仅支持基本字段提取）
-
-**限制**：
-- ⚠️ 仅支持基本字段提取，不支持完整JSON解析
-- ⚠️ 不支持数组解析（当前不需要）
-
-**更多信息**：参考 [WASM 环境说明](../../docs/tutorials/contracts/wasm-environment.md#q5-为什么不能使用-encodingjson)
+- [智能合约平台文档](../../../weisyn.git/docs/system/platforms/contracts/README.md) - 平台总览
+- [合约教程](../../../weisyn.git/docs/tutorials/contracts/CONCEPTS.md) - 合约开发教程
+- [WASM 环境说明](../../../weisyn.git/docs/tutorials/contracts/wasm-environment.md) - WASM 环境详解
 
 ---
 
-**文档版本**: v2.0.0  
-**最后更新**: 2025-11-11
+**最后更新**: 2025-01-23  
+**维护者**: WES Core Team
 

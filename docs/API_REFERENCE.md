@@ -1,484 +1,296 @@
-# WES 合约SDK API参考文档
+# Contract SDK Go - API 参考
 
 **版本**: v1.0.0  
-**状态**: ✅ 稳定  
-**最后更新**: 2025-11-11
+**最后更新**: 2025-01-23
 
 ---
 
-## 🎯 快速开始
+## 📋 文档定位
 
 > **⚠️ 重要提示**: Framework 层是 SDK 的内部实现层，合约开发者**应优先使用 Helpers 层的业务语义接口**。Framework 层主要用于环境查询、事件发出等基础能力。
 
-### 推荐方式：使用 Helpers 层
-
-```go
-import (
-    "github.com/weisyn/contract-sdk-go/helpers/token"
-    "github.com/weisyn/contract-sdk-go/framework"
-)
-
-//export Transfer
-func Transfer() uint32 {
-    params := framework.GetContractParams()
-    toStr := params.ParseJSON("to")
-    amount := params.ParseJSONInt("amount")
-    
-    to, err := framework.ParseAddressBase58(toStr)
-    if err != nil {
-        return framework.ERROR_INVALID_PARAMS
-    }
-    
-    caller := framework.GetCaller()
-    err = token.Transfer(caller, to, nil, framework.Amount(amount))
-    if err != nil {
-        return framework.ERROR_EXECUTION_FAILED
-    }
-    
-    return framework.SUCCESS
-}
-```
-
-### Framework 层使用场景
-
-Framework 层主要用于：
-- 环境查询（GetCaller、GetBlockHeight 等）
-- 事件和日志（EmitEvent、LogDebug）
-- 参数解析（GetContractParams）
+**本文档目标**：
+- 提供 Go SDK 的完整 API 参考
+- 说明 Framework 层和 Helpers 层的接口
+- 提供使用示例和最佳实践
 
 ---
 
-## 📚 核心API
+## 🏗️ SDK 分层架构
 
-> **⚠️ 注意**: Framework 层主要用于环境查询、事件发出等基础能力。**交易构建相关的 API（如 TransactionBuilder）是内部实现，合约开发者应使用 Helpers 层的业务语义接口**。
-
-### 1. 环境查询函数
-
-#### GetCaller()
-
-获取调用者地址。
-
-**签名**:
-```go
-func GetCaller() Address
+```mermaid
+graph TB
+    subgraph HELPERS["Helpers 业务语义层"]
+        TOKEN["Token 模块"]
+        STAKING["Staking 模块"]
+        GOVERNANCE["Governance 模块"]
+        MARKET["Market 模块"]
+        NFT["NFT 模块"]
+        RWA["RWA 模块"]
+        EXTERNAL["External 模块"]
+    end
+    
+    subgraph FRAMEWORK["Framework 框架层"]
+        CONTRACT["Contract 接口"]
+        CONTEXT["Context 环境查询"]
+        EVENT["Event 事件日志"]
+        STORAGE["Storage 存储"]
+    end
+    
+    subgraph INTERNAL["内部实现层"]
+        TX_BUILDER["交易构建器<br/>(内部使用)"]
+        HOSTABI["HostABI 封装<br/>(内部使用)"]
+    end
+    
+    HELPERS --> FRAMEWORK
+    FRAMEWORK --> INTERNAL
+    INTERNAL --> HOSTABI
+    
+    style HELPERS fill:#FFD700,color:#000
+    style FRAMEWORK fill:#4CAF50,color:#fff
+    style INTERNAL fill:#9E9E9E,color:#fff
 ```
 
-**返回值**:
-- `Address`: 调用者地址
+---
 
-**示例**:
+## 🔧 Framework 层 API
+
+### 环境查询
+
+#### GetCaller
+
+获取当前调用的调用者地址。
+
 ```go
+func GetCaller() []byte
+```
+
+**返回值**：
+- `[]byte` - 调用者地址（字节数组）
+
+**示例**：
+```go
+import "github.com/weisyn/contract-sdk-go/framework"
+
 caller := framework.GetCaller()
+// caller 是调用者的地址
 ```
 
----
+#### GetCallParams
 
-#### GetContractAddress()
+获取当前调用的参数。
 
-获取当前合约地址。
-
-**签名**:
 ```go
-func GetContractAddress() Address
+func GetCallParams() []byte
 ```
 
-**返回值**:
-- `Address`: 合约地址
+**返回值**：
+- `[]byte` - 调用参数（字节数组，通常是 JSON 格式）
 
-**示例**:
+**示例**：
 ```go
-contractAddr := framework.GetContractAddress()
+import "github.com/weisyn/contract-sdk-go/framework"
+
+params := framework.GetCallParams()
+// params 是调用参数
 ```
 
----
+### 事件日志
 
-#### GetTransactionID()
+#### EmitEvent
 
-获取当前交易ID。
+发出事件。
 
-**签名**:
 ```go
-func GetTransactionID() []byte
+func EmitEvent(eventType string, data []byte)
 ```
 
-**返回值**:
-- `[]byte`: 交易ID（32字节）
+**参数**：
+- `eventType` - 事件类型（字符串）
+- `data` - 事件数据（字节数组）
 
-**示例**:
+**示例**：
 ```go
-txID := framework.GetTransactionID()
+import "github.com/weisyn/contract-sdk-go/framework"
+
+framework.EmitEvent("Transfer", []byte("from:alice,to:bob,amount:100"))
 ```
 
----
+### 返回值设置
 
-#### GetBlockHeight()
+#### SetReturnData
 
-获取当前区块高度。
+设置返回值。
 
-**签名**:
-```go
-func GetBlockHeight() uint64
-```
-
-**返回值**:
-- `uint64`: 区块高度
-
-**示例**:
-```go
-height := framework.GetBlockHeight()
-```
-
----
-
-#### GetBlockTimestamp()
-
-获取当前区块时间戳。
-
-**签名**:
-```go
-func GetBlockTimestamp() uint64
-```
-
-**返回值**:
-- `uint64`: 区块时间戳
-
-**示例**:
-```go
-timestamp := framework.GetBlockTimestamp()
-```
-
----
-
-#### QueryUTXOBalance()
-
-查询UTXO余额（账户抽象）。
-
-**签名**:
-```go
-func QueryUTXOBalance(
-    owner Address,
-    tokenID TokenID,
-) Amount
-```
-
-**参数**:
-- `owner`: 地址
-- `tokenID`: 代币ID（nil 表示原生币）
-
-**返回值**:
-- `Amount`: 余额
-
-**示例**:
-```go
-balance := framework.QueryUTXOBalance(addr, nil)
-```
-
----
-
-### 2. 参数解析
-
-#### GetContractParams()
-
-获取合约参数。
-
-**签名**:
-```go
-func GetContractParams() *ContractParams
-```
-
-**返回值**:
-- `*ContractParams`: 参数对象
-
-**示例**:
-```go
-params := framework.GetContractParams()
-toStr := params.ParseJSON("to")
-amount := params.ParseJSONInt("amount")
-```
-
----
-
-#### ParseAddressBase58()
-
-解析Base58编码的地址。
-
-**签名**:
-```go
-func ParseAddressBase58(addrStr string) (Address, error)
-```
-
-**参数**:
-- `addrStr`: Base58编码的地址字符串
-
-**返回值**:
-- `Address`: 地址对象
-- `error`: 错误信息
-
-**示例**:
-```go
-addr, err := framework.ParseAddressBase58(addrStr)
-if err != nil {
-    return framework.ERROR_INVALID_PARAMS
-}
-```
-
----
-
-### 3. 事件与日志
-
-#### EmitEvent()
-
-发出链上事件。
-
-**签名**:
-```go
-func EmitEvent(event *Event) error
-```
-
-**参数**:
-- `event`: 事件对象
-
-**示例**:
-```go
-event := framework.NewEvent("Transfer")
-event.AddAddressField("from", from)
-event.AddAddressField("to", to)
-event.AddUint64Field("amount", amount)
-framework.EmitEvent(event)
-```
-
----
-
-#### LogDebug()
-
-记录调试日志。
-
-**签名**:
-```go
-func LogDebug(message string)
-```
-
-**参数**:
-- `message`: 日志消息
-
-**示例**:
-```go
-framework.LogDebug("Processing transfer...")
-```
-
----
-
-### 4. 返回值设置
-
-#### SetReturnData()
-
-设置返回数据。
-
-**签名**:
 ```go
 func SetReturnData(data []byte)
 ```
 
-**参数**:
-- `data`: 返回数据
+**参数**：
+- `data` - 返回数据（字节数组）
 
-**示例**:
+**示例**：
 ```go
-framework.SetReturnData([]byte("result"))
+import "github.com/weisyn/contract-sdk-go/framework"
+
+framework.SetReturnData([]byte("success"))
+```
+
+### 错误码常量
+
+```go
+const (
+    SUCCESS uint32 = 0
+    ERROR_INVALID_PARAMS uint32 = 1
+    ERROR_INSUFFICIENT_BALANCE uint32 = 2
+    // ... 更多错误码
+)
 ```
 
 ---
 
-#### SetReturnJSON()
+## 💼 Helpers 层 API
 
-设置JSON返回值。
+### Token 模块
 
-**签名**:
-```go
-func SetReturnJSON(data map[string]interface{})
-```
+#### Transfer
 
-**参数**:
-- `data`: JSON数据
-
-**示例**:
-```go
-framework.SetReturnJSON(map[string]interface{}{
-    "balance": 1000,
-    "token_id": "my_token",
-})
-```
-
----
-
-#### GetCaller()
-
-获取调用者地址。
-
-**签名**:
-```go
-func GetCaller() Address
-```
-
-**返回值**:
-- `Address`: 调用者地址
-
-**示例**:
-```go
-caller := framework.GetCaller()
-```
-
----
-
-#### GetContractAddress()
-
-获取当前合约地址。
-
-**签名**:
-```go
-func GetContractAddress() Address
-```
-
-**返回值**:
-- `Address`: 合约地址
-
-**示例**:
-```go
-contractAddr := framework.GetContractAddress()
-```
-
----
-
-### 4. 事件系统
-
-#### EmitEvent()
-
-发出事件。
-
-**签名**:
-```go
-func EmitEvent(event *Event) error
-```
-
-**参数**:
-- `event`: 事件对象
-
-**示例**:
-```go
-event := framework.NewEvent("Transfer")
-event.AddAddressField("from", from)
-event.AddAddressField("to", to)
-event.AddUint64Field("amount", amount)
-framework.EmitEvent(event)
-```
-
----
-
-## 🔧 类型定义
-
-### Address
-
-地址类型（20字节）。
+转账 Token。
 
 ```go
-type Address []byte
-
-func (a Address) ToBytes() []byte
-func (a Address) ToString() string
+func Transfer(params []byte) uint32
 ```
 
-### TokenID
+**参数**：
+- `params` - 转账参数（JSON 格式：`{"to": "address", "amount": 100}`）
 
-代币ID类型。
+**返回值**：
+- `uint32` - 错误码（`framework.SUCCESS` 表示成功）
 
-```go
-type TokenID string
-```
-
-### Amount
-
-数量类型。
-
-```go
-type Amount uint64
-```
-
----
-
-## ⚠️ 错误码
-
-| 错误码 | 常量 | 说明 |
-|--------|------|------|
-| 0 | `SUCCESS` | 成功 |
-| 1 | `ERROR_INVALID_PARAMS` | 参数无效 |
-| 2 | `ERROR_INSUFFICIENT_BALANCE` | 余额不足 |
-| 3 | `ERROR_EXECUTION_FAILED` | 执行失败 |
-| 4 | `ERROR_PERMISSION_DENIED` | 权限不足 |
-
----
-
-## 🎯 最佳实践
-
-### 1. 优先使用 Helpers 层
-
-**推荐**（使用 Helpers 层业务语义接口）:
+**示例**：
 ```go
 import "github.com/weisyn/contract-sdk-go/helpers/token"
 
-err := token.Transfer(from, to, tokenID, amount)
-if err != nil {
-    return framework.ERROR_EXECUTION_FAILED
+params := []byte(`{"to": "0x1234...", "amount": 100}`)
+errCode := token.Transfer(params)
+if errCode != framework.SUCCESS {
+    return errCode
 }
 ```
 
-**不推荐**（直接使用 Framework 层交易构建）:
+#### Mint
+
+铸造 Token。
+
 ```go
-// Framework 层的交易构建是内部实现，不应直接使用
-// framework.BeginTransaction()...
+func Mint(params []byte) uint32
 ```
 
-### 2. 环境查询和事件
+**参数**：
+- `params` - 铸造参数（JSON 格式：`{"to": "address", "amount": 100}`）
 
-**推荐**:
+**返回值**：
+- `uint32` - 错误码
+
+#### BalanceOf
+
+查询余额。
+
 ```go
-caller := framework.GetCaller()
-height := framework.GetBlockHeight()
-
-event := framework.NewEvent("Transfer")
-event.AddAddressField("from", from)
-event.AddAddressField("to", to)
-event.AddUint64Field("amount", amount)
-framework.EmitEvent(event)
+func BalanceOf(address []byte) uint64
 ```
 
-### 3. 参数验证
+**参数**：
+- `address` - 地址（字节数组）
 
-**推荐**:
-```go
-params := framework.GetContractParams()
-toStr := params.ParseJSON("to")
-if toStr == "" {
-    return framework.ERROR_INVALID_PARAMS
-}
-
-addr, err := framework.ParseAddressBase58(toStr)
-if err != nil {
-    return framework.ERROR_INVALID_PARAMS
-}
-```
+**返回值**：
+- `uint64` - 余额
 
 ---
 
-## 📝 完整示例
+### Staking 模块
 
-查看示例合约：
-- [ERC-20 代币合约](../examples/token/erc20-token/)
-- [基础质押合约](../examples/staking/basic-staking/)
-- [更多示例](../examples/README.md)
+#### Stake
+
+质押。
+
+```go
+func Stake(params []byte) uint32
+```
+
+**参数**：
+- `params` - 质押参数（JSON 格式：`{"amount": 100}`）
+
+**返回值**：
+- `uint32` - 错误码
+
+#### Unstake
+
+解质押。
+
+```go
+func Unstake(params []byte) uint32
+```
+
+**参数**：
+- `params` - 解质押参数（JSON 格式：`{"amount": 100}`）
+
+**返回值**：
+- `uint32` - 错误码
 
 ---
 
-**最后更新**: 2025-11-11
+### Governance 模块
 
-> **注意**: 本文档描述的是 Framework 层的 API。**合约开发者应优先使用 Helpers 层的业务语义接口**（如 `token.Transfer()`, `staking.Stake()` 等），详见 [Helpers 层文档](../helpers/README.md)。
+#### CreateProposal
+
+创建提案。
+
+```go
+func CreateProposal(params []byte) uint32
+```
+
+**参数**：
+- `params` - 提案参数（JSON 格式）
+
+**返回值**：
+- `uint32` - 错误码
+
+#### Vote
+
+投票。
+
+```go
+func Vote(params []byte) uint32
+```
+
+**参数**：
+- `params` - 投票参数（JSON 格式：`{"proposalId": 1, "option": "yes"}`）
+
+**返回值**：
+- `uint32` - 错误码
+
+---
+
+## 📖 进一步阅读
+
+### 核心文档
+
+- **[开发者指南](./DEVELOPER_GUIDE.md)** - 如何使用 Go SDK 开发合约
+- **[业务场景实现指南](./BUSINESS_SCENARIOS.md)** - 如何实现业务场景
+- **[WES Error Spec 实施](./WES_ERROR_SPEC_IMPLEMENTATION.md)** - 错误处理规范
+
+### 模块文档
+
+- **[Helpers 层文档](../helpers/README.md)** - 业务语义层详细说明
+- **[Framework 层文档](../framework/README.md)** - 框架层详细说明
+
+### 平台文档（主仓库）
+
+- [HostABI 规范](../../../weisyn.git/docs/components/core/ispc/capabilities/hostabi-primitives.md) - HostABI 原语能力
+
+---
+
+**最后更新**: 2025-01-23  
+**维护者**: WES Core Team
 

@@ -1,354 +1,287 @@
-# 业务场景实现指南
+# 业务场景实现指南 - Go SDK 视角
 
 **版本**: v1.0.0  
-**状态**: ✅ 稳定  
-**最后更新**: 2025-11-11
+**最后更新**: 2025-01-23
 
 ---
 
-## 📋 概述
+## 📋 文档定位
 
-本文档从**用户视角**说明如何使用 WES 合约 SDK 实现常见的业务场景，包括电商、制造业等。重点关注**如何使用 SDK 提供的便捷操作**，而非底层技术细节。
+> 📌 **重要说明**：本文档聚焦 **Go SDK 视角**的业务场景实现指南。  
+> 每个场景的前半部分会链接到主仓库的对应场景文档，后半部分说明如何使用 Go SDK 实现。
 
----
+**本文档目标**：
+- 说明如何使用 Go SDK 实现各种业务场景
+- 提供场景实现建议、模板指引和关键 API
+- 帮助开发者快速找到适合的模板和 API
 
-## 🛒 电商场景
-
-### 场景需求
-
-**业务需求**：
-- 用户下单
-- 支付确认
-- 库存扣减
-- 订单确认
-
-**关键要求**：
-- 业务流连续，不中断
-- 用户无需手动签名
-- 自动完成整个流程
-
-### 实现方案
-
-**使用 SDK 提供的便捷操作**：
-
-```go
-package main
-
-import (
-	"github.com/weisyn/contract-sdk-go/helpers/token"
-	"github.com/weisyn/contract-sdk-go/helpers/market"
-	"github.com/weisyn/contract-sdk-go/framework"
-)
-
-//export CreateOrder
-func CreateOrder() uint32 {
-	params := framework.GetContractParams()
-	orderID := params.ParseJSON("order_id")
-	productID := params.ParseJSON("product_id")
-	amount := params.ParseJSONUint64("amount")
-	buyerStr := params.ParseJSON("buyer")
-	sellerStr := params.ParseJSON("seller")
-	
-	// 解析地址
-	buyer, err := framework.ParseAddressBase58(buyerStr)
-	if err != nil {
-		return framework.ERROR_INVALID_PARAMS
-	}
-	
-	seller, err := framework.ParseAddressBase58(sellerStr)
-	if err != nil {
-		return framework.ERROR_INVALID_PARAMS
-	}
-	
-	// 1. 创建订单（业务逻辑）
-	order := createOrder(orderID, productID, amount, buyer, seller)
-	
-	// 2. 处理支付（使用SDK便捷操作）
-	// SDK自动处理支付流程，业务流连续
-	err = token.Transfer(
-		buyer,
-		seller,
-		nil, // 默认代币
-		framework.Amount(amount),
-	)
-	if err != nil {
-		return framework.ERROR_EXECUTION_FAILED
-	}
-	
-	// 3. 库存扣减（业务逻辑）
-	reduceInventory(productID, 1)
-	
-	// 4. 订单确认（业务逻辑）
-	confirmOrder(orderID)
-	
-	// 发出事件
-	event := framework.NewEvent("OrderCreated")
-	event.AddStringField("order_id", orderID)
-	event.AddAddressField("buyer", buyer)
-	event.AddAddressField("seller", seller)
-	event.AddUint64Field("amount", amount)
-	framework.EmitEvent(event)
-	
-	// ✅ 业务流连续，用户直接获得订单确认结果
-	return framework.SUCCESS
-}
-
-//export EscrowOrder
-func EscrowOrder() uint32 {
-	params := framework.GetContractParams()
-	orderID := params.ParseJSON("order_id")
-	buyerStr := params.ParseJSON("buyer")
-	sellerStr := params.ParseJSON("seller")
-	amount := params.ParseJSONUint64("amount")
-	
-	buyer, _ := framework.ParseAddressBase58(buyerStr)
-	seller, _ := framework.ParseAddressBase58(sellerStr)
-	
-	// 使用SDK的托管功能
-	err := market.Escrow(
-		buyer,
-		seller,
-		nil, // 代币ID
-		framework.Amount(amount),
-		orderID, // 托管ID
-	)
-	if err != nil {
-		return framework.ERROR_EXECUTION_FAILED
-	}
-	
-	return framework.SUCCESS
-}
-
-//export ReleaseOrder
-func ReleaseOrder() uint32 {
-	params := framework.GetContractParams()
-	orderID := params.ParseJSON("order_id")
-	sellerStr := params.ParseJSON("seller")
-	buyerStr := params.ParseJSON("buyer")
-	
-	seller, _ := framework.ParseAddressBase58(sellerStr)
-	buyer, _ := framework.ParseAddressBase58(buyerStr)
-	
-	// 使用SDK的释放功能
-	err := market.Release(
-		seller,
-		buyer,
-		nil, // 代币ID
-		framework.Amount(0), // 从托管中释放
-		orderID, // 托管ID
-	)
-	if err != nil {
-		return framework.ERROR_EXECUTION_FAILED
-	}
-	
-	return framework.SUCCESS
-}
-```
-
-### 关键点
-
-1. **使用 SDK 业务接口**：`token.Transfer()`、`market.Escrow()` 等
-2. **业务流连续**：SDK 自动处理，无需用户手动签名
-3. **专注业务逻辑**：开发者只需关注业务语义，无需关心底层实现
+**前置阅读**（平台级文档，来自主仓库）：
+- [智能合约平台应用场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md) - 平台级场景文档
+- [业务场景分析](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md) - 详细业务流图
 
 ---
 
-## 🏭 制造业场景
+## 🎯 场景分类
 
-### 场景需求
+### 基础场景
 
-**业务需求**：
-- 工单创建
-- 生产排程
-- 质检确认
-- 出库处理
+- [Token 转账](#token-转账)
+- [NFT 铸造与交易](#nft-铸造与交易)
+- [质押与治理](#质押与治理)
 
-**关键要求**：
-- 业务流连续，不中断
-- 自动完成整个流程
+### 企业场景
 
-### 实现方案
-
-```go
-package main
-
-import (
-	"github.com/weisyn/contract-sdk-go/helpers/token"
-	"github.com/weisyn/contract-sdk-go/helpers/rwa"
-	"github.com/weisyn/contract-sdk-go/framework"
-)
-
-//export CreateWorkOrder
-func CreateWorkOrder() uint32 {
-	params := framework.GetContractParams()
-	workOrderID := params.ParseJSON("work_order_id")
-	productID := params.ParseJSON("product_id")
-	quantity := params.ParseJSONUint64("quantity")
-	
-	// 1. 创建工单（业务逻辑）
-	workOrder := createWorkOrder(workOrderID, productID, quantity)
-	
-	// 2. 生产排程（业务逻辑）
-	scheduleProduction(workOrderID, quantity)
-	
-	// 3. 质检确认（业务逻辑）
-	qualityCheck(workOrderID)
-	
-	// 4. 出库处理（使用SDK便捷操作）
-	// 将生产的产品代币化
-	result, err := rwa.ValidateAndTokenize(
-		workOrderID,
-		[]byte(`{"product_id":"`+productID+`","quantity":`+framework.Uint64ToString(quantity)+`}`),
-		"", // 验证API（可选）
-		nil, // 验证佐证（可选）
-		"", // 估值API（可选）
-		nil, // 估值佐证（可选）
-	)
-	if err != nil {
-		return framework.ERROR_EXECUTION_FAILED
-	}
-	
-	// 发出事件
-	event := framework.NewEvent("WorkOrderCompleted")
-	event.AddStringField("work_order_id", workOrderID)
-	event.AddStringField("product_id", productID)
-	event.AddUint64Field("quantity", quantity)
-	event.AddStringField("token_id", result.TokenID)
-	framework.EmitEvent(event)
-	
-	// ✅ 业务流连续，用户直接获得工单完成结果
-	return framework.SUCCESS
-}
-```
-
-### 关键点
-
-1. **使用 SDK 业务接口**：`rwa.ValidateAndTokenize()` 等
-2. **业务流连续**：SDK 自动处理，无需用户手动签名
-3. **专注业务逻辑**：开发者只需关注业务语义
+- [供应链溯源](#供应链溯源)
+- [数字资产交易](#数字资产交易)
+- [去中心化金融](#去中心化金融)
 
 ---
 
-## 📊 SDK 提供的便捷操作
+## 💰 Token 转账
 
-### Token 模块
+### 平台级场景文档
 
-**转账**：
-```go
-err := token.Transfer(from, to, tokenID, amount)
-```
+参考主仓库文档：
+- [Token 场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md#token-转账)
 
-**铸造**：
-```go
-err := token.Mint(to, tokenID, amount)
-```
+### Go SDK 实现
 
-**销毁**：
-```go
-err := token.Burn(from, tokenID, amount)
-```
+#### 推荐模板
 
-### Market 模块
+- `templates/standard/token/erc20-token` - ERC20 标准 Token
+- `templates/learning/simple-token` - 简单 Token 示例
 
-**托管**：
-```go
-err := market.Escrow(buyer, seller, tokenID, amount, escrowID)
-```
-
-**释放**：
-```go
-err := market.Release(from, beneficiary, tokenID, amount, vestingID)
-```
-
-### RWA 模块
-
-**验证并代币化**：
-```go
-result, err := rwa.ValidateAndTokenize(
-	assetID,
-	documents,
-	validatorAPI,
-	validatorEvidence,
-	valuationAPI,
-	valuationEvidence,
-)
-```
-
-### Governance 模块
-
-**投票**：
-```go
-result, err := governance.VoteAndCount(
-	proposalID,
-	voter,
-	voteOption,
-	votingPower,
-)
-```
-
----
-
-## 🎯 最佳实践
-
-### 1. 优先使用业务语义接口
-
-**✅ 推荐**：使用 `helpers` 层的业务语义接口
+#### 关键 API
 
 ```go
 import "github.com/weisyn/contract-sdk-go/helpers/token"
 
-err := token.Transfer(from, to, tokenID, amount)
+// 转账
+errCode := token.Transfer(params)
+
+// 铸造
+errCode := token.Mint(params)
+
+// 授权
+errCode := token.Approve(params)
+
+// 查询余额
+balance := token.BalanceOf(address)
 ```
 
-**❌ 不推荐**：直接使用 Framework 层的底层接口（除非有特殊需求）
+#### 实现要点
 
-```go
-import "github.com/weisyn/contract-sdk-go/framework"
-
-// 不推荐：除非有特殊需求
-framework.BeginTransaction().Transfer(...).Finalize()
-```
-
-### 2. 专注业务逻辑
-
-**✅ 推荐**：专注于业务语义的实现
-
-```go
-func CreateOrder() uint32 {
-	// 业务逻辑：创建订单
-	order := createOrder(...)
-	
-	// 使用SDK便捷操作：处理支付
-	err := token.Transfer(...)
-	
-	// 业务逻辑：确认订单
-	confirmOrder(...)
-	
-	return framework.SUCCESS
-}
-```
-
-### 3. 使用事件记录业务状态
-
-**✅ 推荐**：使用事件记录重要的业务状态变化
-
-```go
-event := framework.NewEvent("OrderCreated")
-event.AddStringField("order_id", orderID)
-event.AddAddressField("buyer", buyer)
-framework.EmitEvent(event)
-```
+1. **使用 Helpers API**：优先使用 `token.Transfer()` 等业务语义接口
+2. **错误处理**：遵循 WES Error Spec，返回标准错误码
+3. **事件发出**：在关键操作后发出事件，便于链下监听
 
 ---
 
-## 📚 相关文档
+## 🎨 NFT 铸造与交易
 
-- **[开发者指南](./DEVELOPER_GUIDE.md)** - 如何使用 SDK 开发合约
-- **[API 参考](./API_REFERENCE.md)** - SDK 接口详细说明
-- **[应用场景分析](./APPLICATION_SCENARIOS_ANALYSIS.md)** - 更多业务场景分析
-- **[示例代码](../examples/README.md)** - 完整的示例代码
+### 平台级场景文档
+
+参考主仓库文档：
+- [NFT 场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md#nft-铸造与交易)
+
+### Go SDK 实现
+
+#### 推荐模板
+
+- `templates/standard/nft/collectibles` - 收藏品 NFT
+- `templates/learning/basic-nft` - 基础 NFT 示例
+
+#### 关键 API
+
+```go
+import "github.com/weisyn/contract-sdk-go/helpers/nft"
+
+// 铸造 NFT
+errCode := nft.Mint(params)
+
+// 转移 NFT
+errCode := nft.Transfer(params)
+
+// 查询 NFT 信息
+info := nft.GetTokenInfo(tokenId)
+```
+
+#### 实现要点
+
+1. **元数据管理**：NFT 元数据可以存储在链上或链下
+2. **批量操作**：支持批量铸造和转移
+3. **权限控制**：实现铸造权限和转移权限控制
 
 ---
 
-**最后更新**: 2025-11-11
+## 🏛️ 质押与治理
+
+### 平台级场景文档
+
+参考主仓库文档：
+- [质押场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md#质押与治理)
+
+### Go SDK 实现
+
+#### 推荐模板
+
+- `templates/standard/staking/basic-staking` - 基础质押
+- `templates/standard/governance/voting` - 投票治理
+
+#### 关键 API
+
+```go
+import (
+    "github.com/weisyn/contract-sdk-go/helpers/staking"
+    "github.com/weisyn/contract-sdk-go/helpers/governance"
+)
+
+// 质押
+errCode := staking.Stake(params)
+
+// 解质押
+errCode := staking.Unstake(params)
+
+// 创建提案
+errCode := governance.CreateProposal(params)
+
+// 投票
+errCode := governance.Vote(params)
+```
+
+#### 实现要点
+
+1. **质押周期**：支持固定期限和灵活期限质押
+2. **奖励计算**：实现奖励计算和分发机制
+3. **治理流程**：实现提案、投票、执行流程
+
+---
+
+## 📦 供应链溯源
+
+### 平台级场景文档
+
+参考主仓库文档：
+- [供应链场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md#供应链溯源)
+
+### Go SDK 实现
+
+#### 推荐模板
+
+- `templates/standard/rwa/supply-chain` - 供应链溯源
+
+#### 关键 API
+
+```go
+import "github.com/weisyn/contract-sdk-go/helpers/rwa"
+
+// 创建资产
+errCode := rwa.CreateAsset(params)
+
+// 转移资产
+errCode := rwa.TransferAsset(params)
+
+// 查询资产历史
+history := rwa.GetAssetHistory(assetId)
+```
+
+#### 实现要点
+
+1. **资产追踪**：记录资产从生产到销售的完整路径
+2. **权限控制**：实现不同角色的权限控制
+3. **外部集成**：使用 External API 集成外部系统
+
+---
+
+## 💱 数字资产交易
+
+### 平台级场景文档
+
+参考主仓库文档：
+- [交易场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md#数字资产交易)
+
+### Go SDK 实现
+
+#### 推荐模板
+
+- `templates/standard/market/auction` - 拍卖市场
+- `templates/standard/market/exchange` - 交易市场
+
+#### 关键 API
+
+```go
+import "github.com/weisyn/contract-sdk-go/helpers/market"
+
+// 创建订单
+errCode := market.CreateOrder(params)
+
+// 匹配订单
+errCode := market.MatchOrder(params)
+
+// 取消订单
+errCode := market.CancelOrder(params)
+```
+
+#### 实现要点
+
+1. **订单管理**：实现订单创建、匹配、取消流程
+2. **价格发现**：实现价格发现机制
+3. **手续费**：实现手续费计算和分配
+
+---
+
+## 🏦 去中心化金融
+
+### 平台级场景文档
+
+参考主仓库文档：
+- [DeFi 场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md#去中心化金融)
+
+### Go SDK 实现
+
+#### 推荐模板
+
+- `templates/standard/defi/amm` - 自动做市商
+- `templates/standard/defi/lending` - 借贷协议
+
+#### 关键 API
+
+```go
+import "github.com/weisyn/contract-sdk-go/helpers/defi"
+
+// 添加流动性
+errCode := defi.AddLiquidity(params)
+
+// 移除流动性
+errCode := defi.RemoveLiquidity(params)
+
+// 交换代币
+errCode := defi.Swap(params)
+```
+
+#### 实现要点
+
+1. **流动性管理**：实现流动性池管理
+2. **价格计算**：实现 AMM 价格计算算法
+3. **风险控制**：实现滑点保护和价格保护
+
+---
+
+## 📖 进一步阅读
+
+### 核心文档
+
+- **[开发者指南](./DEVELOPER_GUIDE.md)** - 如何使用 Go SDK 开发合约
+- **[API 参考](./API_REFERENCE.md)** - 详细的 API 文档
+- **[合约模板](../templates/README.md)** - SDK 提供的合约开发模板
+
+### 平台文档（主仓库）
+
+- [智能合约平台应用场景](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md) - 平台级场景文档
+- [业务场景分析](../../../weisyn.git/docs/system/platforms/contracts/use-cases.md) - 详细业务流图
+
+---
+
+**最后更新**: 2025-01-23  
+**维护者**: WES Core Team
 
