@@ -1,0 +1,75 @@
+{
+  "id": "collectibles",
+  "name": "Collectibles",
+  "category": "NFT",
+  "description": "收藏品NFT合约，实现卡牌、头像、限量版收藏品等的代币化",
+  "tags": [
+    "standard",
+    "nft",
+    "collectible",
+    "card",
+    "limited-edition"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintNFT）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "NFT唯一标识"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "description": "收藏品名称"
+    },
+    {
+      "name": "series",
+      "type": "string",
+      "required": false,
+      "description": "系列名称"
+    },
+    {
+      "name": "rarity",
+      "type": "string",
+      "required": false,
+      "description": "稀有度"
+    }
+  ],
+  "risks": [
+    "需要实现tokenID唯一性检查",
+    "需要实现元数据管理",
+    "需要实现铸造权限控制"
+  ],
+  "prerequisites": [
+    "完成 Basic NFT 学习模板",
+    "了解 NFT 基本概念",
+    "了解收藏品应用场景"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function MintNFT --params '{\"to\":\"<address>\",\"token_id\":\"collectible_001\",\"name\":\"Rare Card #001\",\"series\":\"Legendary\"}'",
+    "wes contract call <contract_address> --function TransferNFT --params '{\"to\":\"<address>\",\"token_id\":\"collectible_001\"}'",
+    "wes contract call <contract_address> --function QueryNFT --params '{\"token_id\":\"collectible_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

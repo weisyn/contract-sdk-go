@@ -1,0 +1,95 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "CreateVesting",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "beneficiary",
+          "type": "address",
+          "required": true,
+          "description": "受益人地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": false,
+          "description": "代币ID"
+        },
+        {
+          "name": "total_amount",
+          "type": "number",
+          "required": true,
+          "description": "总释放金额"
+        },
+        {
+          "name": "vesting_id",
+          "type": "string",
+          "required": true,
+          "description": "释放计划ID"
+        },
+        {
+          "name": "start_time",
+          "type": "number",
+          "required": false,
+          "description": "开始时间（Unix时间戳）"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "required": false,
+          "description": "释放期限（秒）"
+        }
+      ],
+      "returnType": "number",
+      "description": "创建分阶段释放计划",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "ClaimVesting",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "vesting_id",
+          "type": "string",
+          "required": true,
+          "description": "释放计划ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "领取数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "领取已解锁的代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "QueryVesting",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "vesting_id",
+          "type": "string",
+          "required": true,
+          "description": "释放计划ID"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询释放计划的详细信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

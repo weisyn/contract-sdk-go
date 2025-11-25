@@ -1,0 +1,115 @@
+{
+  "methods": [
+    {
+      "name": "MintNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "tokenURI",
+          "type": "string",
+          "required": true,
+          "description": "NFT元数据URI"
+        }
+      ],
+      "returnType": "number",
+      "description": "铸造NFT",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "TransferNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "from",
+          "type": "address",
+          "required": true,
+          "description": "发送者地址"
+        },
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "tokenID",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移NFT所有权",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "GetOwner",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "tokenID",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询NFT所有者",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetTokenURI",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "tokenID",
+          "type": "string",
+          "required": true,
+          "description": "NFT唯一标识"
+        }
+      ],
+      "returnType": "string",
+      "description": "获取NFT元数据URI",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetTotalSupply",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "查询NFT总发行量",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetBalance",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "owner",
+          "type": "address",
+          "required": false,
+          "description": "所有者地址（可选，默认查询调用者）"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询地址拥有的NFT数量",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetContractInfo",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "获取合约基本信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

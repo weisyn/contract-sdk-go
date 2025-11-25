@@ -1,0 +1,37 @@
+{
+  "id": "hello-world",
+  "name": "Hello World",
+  "category": "Learning",
+  "description": "最简单的WES智能合约示例，展示SDK的基本用法，包括初始化、问候和查询功能",
+  "tags": [
+    "learning",
+    "beginner",
+    "hello-world",
+    "tutorial",
+    "getting-started"
+  ],
+  "language": "go",
+  "level": "learning",
+  "entryFile": "main.go",
+  "helpers": [],
+  "parameters": [],
+  "risks": [],
+  "prerequisites": [
+    "了解 Go 基础语法",
+    "了解 WES 合约基本概念"
+  ],
+  "examples": [
+    "wes contract deploy main.wasm --function Initialize",
+    "wes contract call <contract_address> --function SayHello",
+    "wes contract query <contract_address> --function GetInfo"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

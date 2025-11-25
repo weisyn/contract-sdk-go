@@ -1,0 +1,76 @@
+{
+  "id": "basic-nft",
+  "name": "Basic NFT",
+  "category": "Learning",
+  "description": "基础的 NFT 学习模板，提供大量注释和教学说明，帮助开发者理解 NFT 合约的基础概念，包括铸造、转移、查询等功能",
+  "tags": [
+    "learning",
+    "beginner",
+    "nft",
+    "non-fungible-token",
+    "digital-asset"
+  ],
+  "language": "go",
+  "level": "learning",
+  "entryFile": "src/main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintNFT）"
+    },
+    {
+      "name": "tokenURI",
+      "type": "string",
+      "required": true,
+      "description": "NFT元数据URI（MintNFT）"
+    },
+    {
+      "name": "from",
+      "type": "address",
+      "required": true,
+      "description": "发送者地址（TransferNFT）"
+    },
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（TransferNFT）"
+    },
+    {
+      "name": "tokenID",
+      "type": "string",
+      "required": true,
+      "description": "NFT唯一标识"
+    }
+  ],
+  "risks": [
+    "学习模板未实现权限控制",
+    "需要验证所有输入参数",
+    "需要确保NFT唯一性检查"
+  ],
+  "prerequisites": [
+    "了解 TypeScript/AssemblyScript 基础语法",
+    "了解 WES 合约基本概念",
+    "完成 hello-world 和 simple-token 学习"
+  ],
+  "examples": [
+    "wes contract deploy contract.wasm --function Initialize",
+    "wes contract call <contract_address> --function MintNFT --params '{\"to\":\"<address>\",\"tokenURI\":\"https://example.com/metadata/1.json\"}'",
+    "wes contract call <contract_address> --function TransferNFT --params '{\"from\":\"<address>\",\"to\":\"<address>\",\"tokenID\":\"NFT_1\"}'",
+    "wes contract call <contract_address> --function GetOwner --params '{\"tokenID\":\"NFT_1\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "certificates",
+  "name": "Certificates",
+  "category": "NFT",
+  "description": "证书凭证NFT合约，实现学历证书、职业资格证书等的链上认证和管理",
+  "tags": [
+    "standard",
+    "nft",
+    "certificate",
+    "credential",
+    "certification"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintCertificate）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "证书唯一标识"
+    },
+    {
+      "name": "certificate_name",
+      "type": "string",
+      "required": true,
+      "description": "证书名称"
+    },
+    {
+      "name": "issuer",
+      "type": "string",
+      "required": true,
+      "description": "颁发机构"
+    }
+  ],
+  "risks": [
+    "需要实现证书验证（验证证书真实性）",
+    "需要实现证书撤销机制",
+    "需要验证所有输入参数"
+  ],
+  "prerequisites": [
+    "完成 Basic NFT 学习模板",
+    "了解 NFT 基本概念",
+    "了解证书认证场景"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function MintCertificate --params '{\"to\":\"<address>\",\"token_id\":\"CERT_001\",\"certificate_name\":\"Bachelor Degree\",\"issuer\":\"University Name\"}'",
+    "wes contract call <contract_address> --function TransferCertificate --params '{\"to\":\"<address>\",\"token_id\":\"CERT_001\"}'",
+    "wes contract call <contract_address> --function QueryCertificate --params '{\"token_id\":\"CERT_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

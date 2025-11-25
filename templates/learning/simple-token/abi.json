@@ -1,0 +1,58 @@
+{
+  "methods": [
+    {
+      "name": "Transfer",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "代币数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "转账代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "GetBalance",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "address",
+          "type": "address",
+          "required": false,
+          "description": "查询地址（可选，默认查询调用者）"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询代币余额",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetTotalSupply",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "查询代币总发行量",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetContractInfo",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "获取代币基本信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

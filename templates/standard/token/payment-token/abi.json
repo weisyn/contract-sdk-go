@@ -1,0 +1,134 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Transfer",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "代币数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "快速转账，适合日常支付",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Mint",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "铸造数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "铸造新代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Burn",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "销毁数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "销毁代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Approve",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "spender",
+          "type": "address",
+          "required": true,
+          "description": "被授权地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "授权数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "授权其他地址使用代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Airdrop",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "recipients",
+          "type": "string",
+          "required": true,
+          "description": "接收者地址列表（JSON数组）"
+        },
+        {
+          "name": "amounts",
+          "type": "string",
+          "required": true,
+          "description": "代币数量列表（JSON数组）"
+        }
+      ],
+      "returnType": "number",
+      "description": "批量空投代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Freeze",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "target",
+          "type": "address",
+          "required": true,
+          "description": "目标地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "冻结数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "冻结指定地址的代币",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+

@@ -1,0 +1,38 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约，发出欢迎消息",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "SayHello",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "问候调用者，返回个性化消息",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "GetGreetingCount",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "查询总问候次数",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetDeployerInfo",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "查询合约部署者信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

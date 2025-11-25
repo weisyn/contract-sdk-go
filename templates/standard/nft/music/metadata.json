@@ -1,0 +1,69 @@
+{
+  "id": "music",
+  "name": "Music",
+  "category": "NFT",
+  "description": "音乐作品NFT合约，实现音乐版权、音乐收藏等的链上管理",
+  "tags": [
+    "standard",
+    "nft",
+    "music",
+    "copyright",
+    "audio"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintMusic）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "音乐作品唯一标识"
+    },
+    {
+      "name": "track_name",
+      "type": "string",
+      "required": true,
+      "description": "音乐作品名称"
+    },
+    {
+      "name": "artist",
+      "type": "string",
+      "required": true,
+      "description": "艺术家名称"
+    }
+  ],
+  "risks": [
+    "需要实现版权管理（版权验证、版税分配等）",
+    "需要实现音乐播放权限控制",
+    "需要验证所有输入参数"
+  ],
+  "prerequisites": [
+    "完成 Basic NFT 学习模板",
+    "了解 NFT 基本概念",
+    "了解音乐版权应用场景"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function MintMusic --params '{\"to\":\"<address>\",\"token_id\":\"MUSIC_001\",\"track_name\":\"My Song\",\"artist\":\"Artist Name\"}'",
+    "wes contract call <contract_address> --function TransferMusic --params '{\"to\":\"<address>\",\"token_id\":\"MUSIC_001\"}'",
+    "wes contract call <contract_address> --function QueryMusic --params '{\"token_id\":\"MUSIC_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

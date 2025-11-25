@@ -1,0 +1,98 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Mint",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "代币数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "铸造治理代币，持有代币即拥有投票权",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Transfer",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "代币数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移治理代币，投票权随之转移",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "DelegateVotingPower",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "delegate",
+          "type": "address",
+          "required": true,
+          "description": "被委托地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "委托的代币数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "将投票权委托给其他地址",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "VoteWithTokens",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "proposal_id",
+          "type": "string",
+          "required": true,
+          "description": "提案ID"
+        },
+        {
+          "name": "support",
+          "type": "boolean",
+          "required": true,
+          "description": "是否支持提案"
+        }
+      ],
+      "returnType": "number",
+      "description": "使用治理代币进行投票，投票权重等于代币数量",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+

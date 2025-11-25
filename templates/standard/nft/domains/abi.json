@@ -1,0 +1,83 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "MintNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "域名唯一标识"
+        },
+        {
+          "name": "domain_name",
+          "type": "string",
+          "required": true,
+          "description": "域名名称"
+        },
+        {
+          "name": "registrar",
+          "type": "string",
+          "required": false,
+          "description": "注册机构"
+        }
+      ],
+      "returnType": "number",
+      "description": "注册唯一的域名NFT",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "TransferNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "域名唯一标识"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移域名所有权",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "QueryNFT",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "域名唯一标识"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询域名信息和所有者",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

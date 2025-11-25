@@ -1,0 +1,94 @@
+{
+  "id": "amm",
+  "name": "AMM (Automated Market Maker)",
+  "category": "DeFi",
+  "description": "自动化做市商合约，实现完整的AMM功能，包括添加流动性、移除流动性、代币交换等",
+  "tags": [
+    "standard",
+    "defi",
+    "amm",
+    "dex",
+    "swap"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token",
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "token_a_id",
+      "type": "string",
+      "required": true,
+      "description": "代币A ID（AddLiquidity/SwapTokens）"
+    },
+    {
+      "name": "token_b_id",
+      "type": "string",
+      "required": true,
+      "description": "代币B ID（AddLiquidity/SwapTokens）"
+    },
+    {
+      "name": "amount_a",
+      "type": "number",
+      "required": true,
+      "description": "代币A数量（AddLiquidity）"
+    },
+    {
+      "name": "amount_b",
+      "type": "number",
+      "required": true,
+      "description": "代币B数量（AddLiquidity）"
+    },
+    {
+      "name": "token_in_id",
+      "type": "string",
+      "required": true,
+      "description": "输入代币ID（SwapTokens）"
+    },
+    {
+      "name": "token_out_id",
+      "type": "string",
+      "required": true,
+      "description": "输出代币ID（SwapTokens）"
+    },
+    {
+      "name": "amount_in",
+      "type": "number",
+      "required": true,
+      "description": "输入数量（SwapTokens）"
+    },
+    {
+      "name": "min_amount_out",
+      "type": "number",
+      "required": true,
+      "description": "最小输出数量（SwapTokens）"
+    }
+  ],
+  "risks": [
+    "需要实现恒定乘积公式（x*y=k）",
+    "需要实现滑点保护机制",
+    "需要实现手续费分成（给流动性提供者）",
+    "需要实现流动性凭证代币管理"
+  ],
+  "prerequisites": [
+    "完成 ERC-20 Token 模板",
+    "了解 AMM 工作原理",
+    "了解恒定乘积公式"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function AddLiquidity --params '{\"token_a_id\":\"TOKEN_A\",\"token_b_id\":\"TOKEN_B\",\"amount_a\":1000,\"amount_b\":2000}'",
+    "wes contract call <contract_address> --function SwapTokens --params '{\"token_in_id\":\"TOKEN_A\",\"token_out_id\":\"TOKEN_B\",\"amount_in\":1000,\"min_amount_out\":1800}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

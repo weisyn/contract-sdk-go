@@ -1,0 +1,60 @@
+{
+  "id": "lending",
+  "name": "Lending",
+  "category": "DeFi",
+  "description": "借贷协议合约，实现完整的借贷功能，包括存款、借款、还款、取款等",
+  "tags": [
+    "standard",
+    "defi",
+    "lending",
+    "borrow",
+    "deposit"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token",
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "代币ID（Deposit/Borrow/Repay/Withdraw）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "代币数量"
+    }
+  ],
+  "risks": [
+    "需要实现利率计算（根据市场供需动态调整）",
+    "需要实现抵押率检查（确保抵押品价值足够）",
+    "需要实现清算机制（抵押品不足时清算）",
+    "需要实现存款凭证代币管理",
+    "需要实现价格查询（使用ISPC受控机制或价格预言机）"
+  ],
+  "prerequisites": [
+    "完成 ERC-20 Token 模板",
+    "了解借贷协议工作原理",
+    "了解利率和抵押率概念"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Deposit --params '{\"token_id\":\"TOKEN_001\",\"amount\":10000}'",
+    "wes contract call <contract_address> --function Borrow --params '{\"token_id\":\"TOKEN_002\",\"amount\":5000}'",
+    "wes contract call <contract_address> --function Repay --params '{\"token_id\":\"TOKEN_002\",\"amount\":5500}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

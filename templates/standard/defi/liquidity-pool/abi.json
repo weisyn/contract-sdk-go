@@ -1,0 +1,71 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "AddLiquidity",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "代币数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "向流动性池添加代币，获得LP Token",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "RemoveLiquidity",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "lp_token_amount",
+          "type": "number",
+          "required": true,
+          "description": "LP Token数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "从流动性池移除代币，销毁LP Token",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "QueryPoolInfo",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询流动性池的详细信息",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

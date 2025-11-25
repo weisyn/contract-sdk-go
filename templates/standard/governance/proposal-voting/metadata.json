@@ -1,0 +1,65 @@
+{
+  "id": "proposal-voting",
+  "name": "Proposal Voting",
+  "category": "Governance",
+  "description": "提案投票治理合约，实现提案创建和投票功能，支持支持/反对两种投票方式",
+  "tags": [
+    "standard",
+    "governance",
+    "voting",
+    "proposal",
+    "democracy"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "governance"
+  ],
+  "parameters": [
+    {
+      "name": "proposal_id",
+      "type": "string",
+      "required": true,
+      "description": "提案ID"
+    },
+    {
+      "name": "proposal_data",
+      "type": "string",
+      "required": true,
+      "description": "提案内容（Propose）"
+    },
+    {
+      "name": "support",
+      "type": "boolean",
+      "required": true,
+      "description": "是否支持提案（Vote）"
+    }
+  ],
+  "risks": [
+    "需要实现提案创建权限检查",
+    "需要实现提案格式验证",
+    "需要实现提案ID唯一性检查",
+    "需要实现投票权限检查",
+    "需要实现投票时间窗口",
+    "需要实现投票权重计算",
+    "需要实现投票统计"
+  ],
+  "prerequisites": [
+    "了解治理合约基本概念",
+    "了解提案和投票流程"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Propose --params '{\"proposal_id\":\"proposal_123\",\"proposal_data\":\"Increase token supply by 10%\"}'",
+    "wes contract call <contract_address> --function Vote --params '{\"proposal_id\":\"proposal_123\",\"support\":true}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

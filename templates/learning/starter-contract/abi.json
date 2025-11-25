@@ -1,0 +1,207 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "RegisterUser",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "userInfo",
+          "type": "string",
+          "required": true,
+          "description": "用户信息（JSON格式）"
+        }
+      ],
+      "returnType": "number",
+      "description": "用户注册",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "GetUserInfo",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "address",
+          "type": "address",
+          "required": false,
+          "description": "用户地址（可选，默认查询调用者）"
+        }
+      ],
+      "returnType": "string",
+      "description": "获取用户信息",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "TransferAsset",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "资产数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移资产",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "GetAssetBalance",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "address",
+          "type": "address",
+          "required": false,
+          "description": "地址（可选，默认查询调用者）"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询资产余额",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "CreateProposal",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "proposalData",
+          "type": "string",
+          "required": true,
+          "description": "提案内容（JSON格式）"
+        }
+      ],
+      "returnType": "number",
+      "description": "创建提案",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Vote",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "proposalId",
+          "type": "string",
+          "required": true,
+          "description": "提案ID"
+        },
+        {
+          "name": "support",
+          "type": "boolean",
+          "required": true,
+          "description": "是否支持"
+        }
+      ],
+      "returnType": "number",
+      "description": "投票",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "LockAsset",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "锁定数量"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "required": true,
+          "description": "锁定期限（秒）"
+        }
+      ],
+      "returnType": "number",
+      "description": "锁定资产",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "UnlockAsset",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "lockId",
+          "type": "string",
+          "required": true,
+          "description": "锁定ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "解锁资产",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "PlayGame",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "gameData",
+          "type": "string",
+          "required": true,
+          "description": "游戏数据（JSON格式）"
+        }
+      ],
+      "returnType": "number",
+      "description": "游戏逻辑",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "GetGameStats",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "获取游戏统计",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetContractInfo",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "获取合约信息",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "GetContractStats",
+      "type": "read",
+      "parameters": [],
+      "returnType": "string",
+      "description": "获取合约统计",
+      "isReferenceOnly": true
+    },
+    {
+      "name": "PauseContract",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "暂停合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "ResumeContract",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "恢复合约",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+

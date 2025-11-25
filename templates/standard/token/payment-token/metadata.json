@@ -1,0 +1,75 @@
+{
+  "id": "payment-token",
+  "name": "Payment Token",
+  "category": "Token",
+  "description": "支付代币合约，专门用于支付的代币，具有快速转账、低手续费等特点",
+  "tags": [
+    "standard",
+    "token",
+    "payment",
+    "currency",
+    "fast"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（Transfer/Mint）"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "代币数量"
+    },
+    {
+      "name": "spender",
+      "type": "address",
+      "required": true,
+      "description": "被授权地址（Approve）"
+    },
+    {
+      "name": "recipients",
+      "type": "string",
+      "required": true,
+      "description": "接收者地址列表（Airdrop）"
+    },
+    {
+      "name": "amounts",
+      "type": "string",
+      "required": true,
+      "description": "代币数量列表（Airdrop）"
+    }
+  ],
+  "risks": [
+    "需要实现铸造权限控制",
+    "需要实现总量控制",
+    "需要验证所有输入参数"
+  ],
+  "prerequisites": [
+    "完成 ERC-20 Token 模板",
+    "了解支付代币应用场景",
+    "了解代币安全最佳实践"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Transfer --params '{\"to\":\"<address>\",\"amount\":100}'",
+    "wes contract call <contract_address> --function Mint --params '{\"to\":\"<address>\",\"amount\":1000}'",
+    "wes contract call <contract_address> --function Airdrop --params '{\"recipients\":[\"<address1>\",\"<address2>\"],\"amounts\":[100,200]}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

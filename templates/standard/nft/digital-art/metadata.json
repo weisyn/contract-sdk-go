@@ -1,0 +1,82 @@
+{
+  "id": "digital-art",
+  "name": "Digital Art",
+  "category": "NFT",
+  "description": "数字艺术NFT合约，实现数字艺术品的代币化，支持艺术品铸造、转移和查询",
+  "tags": [
+    "standard",
+    "nft",
+    "art",
+    "digital-art",
+    "artwork"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "token"
+  ],
+  "parameters": [
+    {
+      "name": "to",
+      "type": "address",
+      "required": true,
+      "description": "接收者地址（MintNFT）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": true,
+      "description": "NFT唯一标识"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "description": "艺术品名称"
+    },
+    {
+      "name": "artist",
+      "type": "string",
+      "required": true,
+      "description": "艺术家名称"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false,
+      "description": "艺术品描述"
+    },
+    {
+      "name": "image_url",
+      "type": "string",
+      "required": false,
+      "description": "艺术品图片URL"
+    }
+  ],
+  "risks": [
+    "需要实现tokenID唯一性检查",
+    "需要实现元数据管理",
+    "需要实现铸造权限控制",
+    "需要实现NFT所有权映射"
+  ],
+  "prerequisites": [
+    "完成 Basic NFT 学习模板",
+    "了解 NFT 基本概念",
+    "了解数字艺术应用场景"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function MintNFT --params '{\"to\":\"<address>\",\"token_id\":\"art_001\",\"name\":\"Sunset Over Mountains\",\"artist\":\"Alice\"}'",
+    "wes contract call <contract_address> --function TransferNFT --params '{\"to\":\"<address>\",\"token_id\":\"art_001\"}'",
+    "wes contract call <contract_address> --function QueryNFT --params '{\"token_id\":\"art_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

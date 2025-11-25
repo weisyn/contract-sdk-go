@@ -1,0 +1,83 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "MintNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "身份唯一标识"
+        },
+        {
+          "name": "identity_name",
+          "type": "string",
+          "required": true,
+          "description": "身份名称"
+        },
+        {
+          "name": "issuer",
+          "type": "string",
+          "required": true,
+          "description": "颁发机构"
+        }
+      ],
+      "returnType": "number",
+      "description": "铸造唯一的身份证明NFT",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "TransferNFT",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address",
+          "required": true,
+          "description": "接收者地址"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "身份唯一标识"
+        }
+      ],
+      "returnType": "number",
+      "description": "转移身份所有权",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "QueryNFT",
+      "type": "read",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "身份唯一标识"
+        }
+      ],
+      "returnType": "string",
+      "description": "查询身份信息和所有者",
+      "isReferenceOnly": true
+    }
+  ],
+  "version": "1.0.0"
+}
+

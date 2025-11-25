@@ -1,0 +1,98 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Deposit",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "存款数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "存入代币作为抵押品，获得存款凭证代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Borrow",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "借款数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "使用抵押品借出代币",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Repay",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "还款数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "偿还借款本金和利息，释放抵押品",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Withdraw",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": true,
+          "description": "代币ID"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "取款数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "取出存款和收益",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+

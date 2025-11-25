@@ -1,0 +1,75 @@
+{
+  "id": "vesting",
+  "name": "Vesting",
+  "category": "Market",
+  "description": "分阶段释放合约，实现代币的分阶段解锁和释放，适用于代币分配、员工激励、投资解锁等场景",
+  "tags": [
+    "standard",
+    "market",
+    "vesting",
+    "unlock",
+    "release"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "beneficiary",
+      "type": "address",
+      "required": true,
+      "description": "受益人地址（CreateVesting/ClaimVesting）"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": false,
+      "description": "代币ID（CreateVesting）"
+    },
+    {
+      "name": "total_amount",
+      "type": "number",
+      "required": true,
+      "description": "总释放金额（CreateVesting）"
+    },
+    {
+      "name": "vesting_id",
+      "type": "string",
+      "required": true,
+      "description": "释放计划ID"
+    },
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "领取数量（ClaimVesting）"
+    }
+  ],
+  "risks": [
+    "需要实现释放时间表（使用状态输出）",
+    "需要实现释放条件检查",
+    "需要实现可领取数量计算",
+    "需要实现释放计划状态管理"
+  ],
+  "prerequisites": [
+    "了解分阶段释放基本概念",
+    "了解时间锁机制"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function CreateVesting --params '{\"beneficiary\":\"<address>\",\"total_amount\":1000000,\"vesting_id\":\"vesting_001\"}'",
+    "wes contract call <contract_address> --function ClaimVesting --params '{\"vesting_id\":\"vesting_001\",\"amount\":10000}'",
+    "wes contract call <contract_address> --function QueryVesting --params '{\"vesting_id\":\"vesting_001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}

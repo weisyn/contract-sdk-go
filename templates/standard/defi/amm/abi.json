@@ -1,0 +1,107 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [],
+      "returnType": "number",
+      "description": "初始化合约",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "AddLiquidity",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_a_id",
+          "type": "string",
+          "required": true,
+          "description": "代币A ID"
+        },
+        {
+          "name": "token_b_id",
+          "type": "string",
+          "required": true,
+          "description": "代币B ID"
+        },
+        {
+          "name": "amount_a",
+          "type": "number",
+          "required": true,
+          "description": "代币A数量"
+        },
+        {
+          "name": "amount_b",
+          "type": "number",
+          "required": true,
+          "description": "代币B数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "向流动性池添加代币对，获得LP Token",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "RemoveLiquidity",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_a_id",
+          "type": "string",
+          "required": true,
+          "description": "代币A ID"
+        },
+        {
+          "name": "token_b_id",
+          "type": "string",
+          "required": true,
+          "description": "代币B ID"
+        },
+        {
+          "name": "lp_token_amount",
+          "type": "number",
+          "required": true,
+          "description": "LP Token数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "从流动性池移除代币对，销毁LP Token",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "SwapTokens",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "token_in_id",
+          "type": "string",
+          "required": true,
+          "description": "输入代币ID"
+        },
+        {
+          "name": "token_out_id",
+          "type": "string",
+          "required": true,
+          "description": "输出代币ID"
+        },
+        {
+          "name": "amount_in",
+          "type": "number",
+          "required": true,
+          "description": "输入数量"
+        },
+        {
+          "name": "min_amount_out",
+          "type": "number",
+          "required": true,
+          "description": "最小输出数量"
+        }
+      ],
+      "returnType": "number",
+      "description": "使用恒定乘积公式进行代币交换",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+
