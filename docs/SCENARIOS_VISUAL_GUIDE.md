@@ -1,31 +1,7 @@
 # 场景与架构可视化指南
 
 **版本**: v1.0.0  
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-**最后更新**: 2025-01-23
-=======
 **最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
 
 ---
 
@@ -149,30 +125,6 @@ sequenceDiagram
 
 ---
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-**最后更新**: 2025-01-23  
-=======
 **最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
 **维护者**: WES Core Team
 

@@ -1,31 +1,7 @@
 # WES 合约开发指南 - Go SDK 视角
 
 **版本**: v1.0.0  
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-**最后更新**: 2025-01-23
-=======
 **最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23
->>>>>>> Stashed changes
 
 ---
 
@@ -287,30 +263,6 @@ go test ./...
 
 ---
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-**最后更新**: 2025-01-23  
-=======
 **最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
-=======
-**最后更新**: 2025-11-23  
->>>>>>> Stashed changes
 **维护者**: WES Core Team
 
