@@ -80,7 +80,21 @@ func Mint(to framework.Address, tokenID framework.TokenID, metadata []byte) erro
 		}
 	}
 
-	// 5. 发出NFT铸造事件
+	// 5. 记录NFT所有权状态（使用StateOutput）
+	{
+		ownerStateID := buildOwnerStateID(tokenID)
+		ownerHash := computeOwnerHash(ownerStateID, to)
+		
+		success, _, errCode := framework.BeginTransaction().
+			AddStateOutput(ownerStateID, 1, ownerHash).
+			Finalize()
+		
+		if !success {
+			return framework.NewContractError(errCode, "failed to store owner")
+		}
+	}
+
+	// 6. 发出NFT铸造事件
 	caller := framework.GetCaller()
 	event := framework.NewEvent("NFTMint")
 	event.AddAddressField("to", to)
@@ -125,6 +139,22 @@ func computeMetadataHash(stateID []byte, metadata []byte) []byte {
 	data := make([]byte, 0, len(stateID)+len(metadata))
 	data = append(data, stateID...)
 	data = append(data, metadata...)
+	
+	hash := framework.ComputeHash(data)
+	return hash.ToBytes()
+}
+
+// buildOwnerStateID 构建所有权状态ID
+func buildOwnerStateID(tokenID framework.TokenID) []byte {
+	stateID := "nft_owner:" + string(tokenID)
+	return []byte(stateID)
+}
+
+// computeOwnerHash 计算所有权哈希（将地址编码为哈希）
+func computeOwnerHash(stateID []byte, owner framework.Address) []byte {
+	data := make([]byte, 0, len(stateID)+len(owner))
+	data = append(data, stateID...)
+	data = append(data, owner[:]...)
 	
 	hash := framework.ComputeHash(data)
 	return hash.ToBytes()

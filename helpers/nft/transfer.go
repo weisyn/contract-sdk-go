@@ -71,7 +71,21 @@ func Transfer(from, to framework.Address, tokenID framework.TokenID) error {
 		return err
 	}
 
-	// 5. 发出NFT转移事件
+	// 5. 更新NFT所有权状态（使用StateOutput）
+	{
+		ownerStateID := buildOwnerStateID(tokenID)
+		ownerHash := computeOwnerHash(ownerStateID, to)
+		
+		success, _, errCode := framework.BeginTransaction().
+			AddStateOutput(ownerStateID, 1, ownerHash).
+			Finalize()
+		
+		if !success {
+			return framework.NewContractError(errCode, "failed to update owner")
+		}
+	}
+
+	// 6. 发出NFT转移事件
 	event := framework.NewEvent("NFTTransfer")
 	event.AddAddressField("from", from)
 	event.AddAddressField("to", to)

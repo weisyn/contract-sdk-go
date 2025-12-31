@@ -1,0 +1,86 @@
+{
+  "id": "mutual-aid",
+  "name": "Mutual Aid Insurance",
+  "category": "Insurance",
+  "description": "互助险（类似相互宝）合约示例，演示如何在 WES 上实现事后分摊 + 定额给付的互助计划流程。",
+  "tags": [
+    "standard",
+    "insurance",
+    "mutual-aid",
+    "xianghubao",
+    "social-insurance"
+  ],
+  "language": "go",
+  "level": "standard",
+  "entryFile": "main.go",
+  "helpers": [
+    "market"
+  ],
+  "parameters": [
+    {
+      "name": "plan_id",
+      "type": "string",
+      "required": true,
+      "description": "互助计划ID"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "description": "互助计划名称"
+    },
+    {
+      "name": "token_id",
+      "type": "string",
+      "required": false,
+      "description": "计价代币ID，空字符串表示使用原生币"
+    },
+    {
+      "name": "coverage_amount",
+      "type": "number",
+      "required": true,
+      "description": "单次给付额度"
+    },
+    {
+      "name": "service_fee_bp",
+      "type": "number",
+      "required": false,
+      "description": "服务费率（万分比，bp），例如 800 表示 8%"
+    },
+    {
+      "name": "settlement_period",
+      "type": "number",
+      "required": true,
+      "description": "结算周期（秒）"
+    }
+  ],
+  "risks": [
+    "本示例为简化实现，未完整管理链上状态，实际生产应结合 StateOutput 做成员、案件与资金池状态管理",
+    "未实现完整的健康告知、黑名单与等待期规则，需要由业务层或扩展合约补充",
+    "未实现链上 DAO 投票治理，只通过 ReviewClaim 事件记录审核决策"
+  ],
+  "prerequisites": [
+    "理解相互宝/互助险的基本业务机制（成员加入、事后分摊、理赔给付）",
+    "了解 WES 上的 Market 模块（Escrow/Release）和事件模型"
+  ],
+  "examples": [
+    "wes contract call <contract_address> --function Initialize --params '{\"plan_id\":\"plan_xianghubao_001\",\"name\":\"相互宝互助计划\",\"token_id\":\"\",\"coverage_amount\":300000,\"service_fee_bp\":800,\"settlement_period\":2592000}'",
+    "wes contract call <contract_address> --function Join --params '{\"plan_id\":\"plan_xianghubao_001\"}'",
+    "wes contract call <contract_address> --function SubmitClaim --params '{\"plan_id\":\"plan_xianghubao_001\",\"claim_id\":\"claim_202501_0001\",\"insured\":\"<address>\",\"requested_amount\":300000,\"event_time\":1736200000,\"evidence_hash\":\"0xabc\"}'",
+    "wes contract call <contract_address> --function ReviewClaim --params '{\"plan_id\":\"plan_xianghubao_001\",\"claim_id\":\"claim_202501_0001\",\"decision\":\"APPROVE\",\"approved_amount\":280000,\"reason\":\"符合互助规则\",\"review_round_id\":\"round_202501_01\"}'",
+    "wes contract call <contract_address> --function SettleRound --params '{\"plan_id\":\"plan_xianghubao_001\",\"round_id\":\"round_202501_01\",\"total_approved_payout\":1000000,\"member_count_active\":2000000,\"service_fee_bp\":800}'",
+    "wes contract call <contract_address> --function PayContribution --params '{\"plan_id\":\"plan_xianghubao_001\",\"round_id\":\"round_202501_01\",\"payer\":\"<member_address>\",\"pool\":\"<pool_address>\",\"amount\":500,\"contribution_id\":\"ctrb_202501_0001\"}'",
+    "wes contract call <contract_address> --function Payout --params '{\"plan_id\":\"plan_xianghubao_001\",\"claim_id\":\"claim_202501_0001\",\"from\":\"<pool_address>\",\"beneficiary\":\"<user_address>\",\"amount\":280000,\"payout_id\":\"payout_202501_0001\"}'"
+  ],
+  "version": "1.0.0",
+  "author": "WES Contract SDK Team",
+  "license": "Apache-2.0",
+  "sdkCompatibility": {
+    "go": ">=0.1.0-alpha <0.2.0"
+  },
+  "sinceSdk": {
+    "go": "0.1.0-alpha"
+  }
+}
+
+

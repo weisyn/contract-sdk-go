@@ -17,20 +17,30 @@ import (
 //   - owner: 所有者地址，nil表示NFT不存在
 //
 // **实现说明**：
-//   在EUTXO模型中，NFT所有权通过UTXO余额来体现。
-//   如果某个地址对某个tokenID的余额为1，则该地址拥有该NFT。
+//   通过查询 nft_owner:{tokenID} 状态获取所有者地址
 func OwnerOf(tokenID framework.TokenID) *framework.Address {
-	// 在EUTXO模型中，NFT所有权通过查询UTXO余额来确定
-	// 这里简化实现：遍历可能的地址查询余额
-	// 实际应用中，应该通过更高效的方式查询（如索引）
+	if tokenID == "" {
+		return nil
+	}
 	
-	// 注意：这是一个简化实现
-	// 实际应用中，NFT所有权应该通过StateOutput或索引来管理
-	// 当前实现仅作为示例，实际应该使用更高效的查询方式
+	// 构建所有权状态ID
+	ownerStateID := buildOwnerStateID(tokenID)
 	
-	// 返回nil表示NFT不存在或无法确定所有者
-	// 实际应用中应该实现完整的查询逻辑
-	return nil
+	// 查询链上状态
+	stateData := framework.GetStateFromChain(string(ownerStateID))
+	if stateData == nil || len(stateData) == 0 {
+		return nil
+	}
+	
+	// 解析所有者地址（stateData 包含地址字节）
+	// 地址长度为 framework.AddressLen (通常是 20 或 32 字节)
+	if len(stateData) < framework.AddressLen {
+		return nil
+	}
+	
+	var addr framework.Address
+	copy(addr[:], stateData[:framework.AddressLen])
+	return &addr
 }
 
 // BalanceOf 查询地址拥有的NFT数量
@@ -66,14 +76,21 @@ func BalanceOf(owner framework.Address) uint64 {
 //   - metadata: 元数据，nil表示元数据不存在
 //
 // **实现说明**：
-//   元数据存储在StateOutput中，通过stateID查询。
+//   通过查询 nft_metadata:{tokenID} 状态获取元数据
 func GetMetadata(tokenID framework.TokenID) []byte {
+	if tokenID == "" {
+		return nil
+	}
+	
+	// 构建元数据状态ID
 	stateID := buildMetadataStateID(tokenID)
 	
-	// 查询StateOutput
-	// 注意：这是一个简化实现
-	// 实际应用中，应该使用framework提供的状态查询接口
-	// 当前返回nil表示元数据不存在
-	return nil
+	// 查询链上状态
+	metadata := framework.GetStateFromChain(string(stateID))
+	if metadata == nil || len(metadata) == 0 {
+		return nil
+	}
+	
+	return metadata
 }
 

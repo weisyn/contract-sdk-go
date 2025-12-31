@@ -1,0 +1,292 @@
+{
+  "methods": [
+    {
+      "name": "Initialize",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "type": "string",
+          "required": true,
+          "description": "互助计划ID"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "互助计划名称"
+        },
+        {
+          "name": "token_id",
+          "type": "string",
+          "required": false,
+          "description": "计价代币ID，空字符串表示使用原生币"
+        },
+        {
+          "name": "coverage_amount",
+          "type": "number",
+          "required": true,
+          "description": "单次给付额度"
+        },
+        {
+          "name": "service_fee_bp",
+          "type": "number",
+          "required": false,
+          "description": "服务费率（万分比，bp），例如 800 表示 8%"
+        },
+        {
+          "name": "settlement_period",
+          "type": "number",
+          "required": true,
+          "description": "结算周期（秒）"
+        }
+      ],
+      "returnType": "number",
+      "description": "初始化互助计划",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Join",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "type": "string",
+          "required": true,
+          "description": "互助计划ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "加入互助计划成为成员",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "SubmitClaim",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "type": "string",
+          "required": true,
+          "description": "互助计划ID"
+        },
+        {
+          "name": "claim_id",
+          "type": "string",
+          "required": true,
+          "description": "理赔/互助案件ID"
+        },
+        {
+          "name": "insured",
+          "type": "address",
+          "required": false,
+          "description": "被保人地址（可为空，表示为调用者本人）"
+        },
+        {
+          "name": "requested_amount",
+          "type": "number",
+          "required": true,
+          "description": "申请给付金额"
+        },
+        {
+          "name": "event_time",
+          "type": "number",
+          "required": true,
+          "description": "出险时间（时间戳）"
+        },
+        {
+          "name": "evidence_hash",
+          "type": "string",
+          "required": false,
+          "description": "资料哈希"
+        },
+        {
+          "name": "extra",
+          "type": "string",
+          "required": false,
+          "description": "备注信息"
+        }
+      ],
+      "returnType": "number",
+      "description": "提交互助申请（报案）",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "ReviewClaim",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "type": "string",
+          "required": true,
+          "description": "互助计划ID"
+        },
+        {
+          "name": "claim_id",
+          "type": "string",
+          "required": true,
+          "description": "理赔/互助案件ID"
+        },
+        {
+          "name": "decision",
+          "type": "string",
+          "required": true,
+          "description": "审核决策（APPROVE / REJECT 等）"
+        },
+        {
+          "name": "approved_amount",
+          "type": "number",
+          "required": false,
+          "description": "审核通过的给付金额，REJECT 时可为 0"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "审核意见说明"
+        },
+        {
+          "name": "review_round_id",
+          "type": "string",
+          "required": false,
+          "description": "对应的结算轮次ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "审核互助申请（简化版，仅记录决策事件）",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "SettleRound",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "type": "string",
+          "required": true,
+          "description": "互助计划ID"
+        },
+        {
+          "name": "round_id",
+          "type": "string",
+          "required": true,
+          "description": "结算轮次ID"
+        },
+        {
+          "name": "total_approved_payout",
+          "type": "number",
+          "required": true,
+          "description": "本轮已批准的总给付金额"
+        },
+        {
+          "name": "member_count_active",
+          "type": "number",
+          "required": true,
+          "description": "本轮参与分摊的有效成员数量"
+        },
+        {
+          "name": "service_fee_bp",
+          "type": "number",
+          "required": false,
+          "description": "服务费率（万分比，bp）"
+        }
+      ],
+      "returnType": "number",
+      "description": "结算一个互助周期，计算人均分摊额并记录事件",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "PayContribution",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "type": "string",
+          "required": true,
+          "description": "互助计划ID"
+        },
+        {
+          "name": "round_id",
+          "type": "string",
+          "required": true,
+          "description": "结算轮次ID"
+        },
+        {
+          "name": "payer",
+          "type": "address",
+          "required": true,
+          "description": "缴费成员地址"
+        },
+        {
+          "name": "pool",
+          "type": "address",
+          "required": true,
+          "description": "互助资金池地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "本次缴费金额"
+        },
+        {
+          "name": "contribution_id",
+          "type": "string",
+          "required": true,
+          "description": "本次缴费记录ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "成员为某一轮互助结算缴纳分摊，内部调用 market.Escrow 执行托管转账",
+      "isReferenceOnly": false
+    },
+    {
+      "name": "Payout",
+      "type": "write",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "type": "string",
+          "required": true,
+          "description": "互助计划ID"
+        },
+        {
+          "name": "claim_id",
+          "type": "string",
+          "required": true,
+          "description": "理赔/互助案件ID"
+        },
+        {
+          "name": "from",
+          "type": "address",
+          "required": true,
+          "description": "资金来源地址（互助资金池）"
+        },
+        {
+          "name": "beneficiary",
+          "type": "address",
+          "required": true,
+          "description": "受益人地址"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "本次给付金额"
+        },
+        {
+          "name": "payout_id",
+          "type": "string",
+          "required": true,
+          "description": "给付记录ID"
+        }
+      ],
+      "returnType": "number",
+      "description": "为已通过审核的互助案件进行给付，内部调用 market.Release 创建一次性释放计划",
+      "isReferenceOnly": false
+    }
+  ],
+  "version": "1.0.0"
+}
+
+

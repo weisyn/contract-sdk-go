@@ -255,7 +255,7 @@ graph TB
     
     subgraph API_GATEWAY["🌐 API 网关层"]
         direction LR
-        JSONRPC["JSON-RPC 2.0<br/>:8545"]
+        JSONRPC["JSON-RPC 2.0<br/>:28680"]
         HTTP["HTTP REST<br/>/api/v1/*"]
     end
     
